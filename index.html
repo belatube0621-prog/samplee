@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restaurant Management System</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -597,22 +594,6 @@
     </div>
 
     <script>
-        // ===== FIREBASE CONFIGURATION =====
-        const firebaseConfig = {
-          apiKey: "AIzaSyDk8-LpaUnWm20NyahGdwxianUFBbHAf7o",
-          authDomain: "restaurant-management-cef63.firebaseapp.com",
-          databaseURL: "https://restaurant-management-cef63-default-rtdb.firebaseio.com",
-          projectId: "restaurant-management-cef63",
-          storageBucket: "restaurant-management-cef63.appspot.com",
-          messagingSenderId: "892182214266",
-          appId: "1:892182214266:web:1e96b2e9bdb8229b86adc3",
-          measurementId: "G-265YJH1RPC"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-
         // Translations
         const translations = {
             en: {
@@ -703,16 +684,14 @@
         };
         
         function loadCredentials() {
-            db.ref('credentials').on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    credentials = data;
-                }
-            });
+            const saved = localStorage.getItem('credentials');
+            if (saved) {
+                credentials = JSON.parse(saved);
+            }
         }
-
+        
         function saveCredentials() {
-            db.ref('credentials').set(credentials);
+            localStorage.setItem('credentials', JSON.stringify(credentials));
         }
         
         // New order counter for kitchen alerts
@@ -880,6 +859,11 @@
             loadSettings();
             loadMenuItems();
             loadOrderHistory();
+            applySettings();
+            lastOrderCount = orderHistory.filter(o => o.status !== 'delivered').length;
+            
+            // Check for new orders every 3 seconds for kitchen
+            setInterval(checkForNewOrders, 3000);
         }
 
         // Role Selection
@@ -972,13 +956,10 @@
 
         // Settings Management
         function loadSettings() {
-            db.ref('settings').on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    settings = data;
-                    applySettings();
-                }
-            });
+            const saved = localStorage.getItem('restaurantSettings');
+            if (saved) {
+                settings = JSON.parse(saved);
+            }
         }
 
         function applySettings() {
@@ -1047,25 +1028,22 @@
             settings.colors.bgPrimary = document.getElementById('bgColor').value;
             settings.colors.bgSecondary = document.getElementById('bgSecondaryColor').value;
             
-            db.ref('settings').set(settings);
+            localStorage.setItem('restaurantSettings', JSON.stringify(settings));
+            applySettings();
             closeSettings();
             showNotification('Settings saved successfully!', 'success');
         }
 
         // Menu Management
         function loadMenuItems() {
-            db.ref('menuItems').on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    menuItems = data;
-                    renderMenu();
-                    renderMenuItemsList();
-                }
-            });
+            const saved = localStorage.getItem('menuItems');
+            if (saved) {
+                menuItems = JSON.parse(saved);
+            }
         }
 
         function saveMenuItems() {
-            db.ref('menuItems').set(menuItems);
+            localStorage.setItem('menuItems', JSON.stringify(menuItems));
         }
 
         function openMenuManagement() {
@@ -1358,9 +1336,8 @@
                 return;
             }
             
-            const orderId = Date.now();
             const order = {
-                id: orderId,
+                id: Date.now(),
                 items: [...cart],
                 total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
                 date: new Date().toLocaleString(),
@@ -1371,8 +1348,9 @@
                 language: currentLanguage
             };
             
-            db.ref('orders/' + orderId).set(order);
-
+            orderHistory.unshift(order);
+            localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
+            
             cart = [];
             updateCartCount();
             document.getElementById('tableModal').classList.remove('active');
@@ -1386,20 +1364,10 @@
 
         // Order History
         function loadOrderHistory() {
-            db.ref('orders').on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    orderHistory = Object.values(data);
-                    renderOrderHistory();
-                    if (currentRole === 'kitchen') {
-                        renderKitchenOrders();
-                    }
-                    if (currentRole === 'owner') {
-                        updateOwnerStats();
-                        renderOwnerOrders();
-                    }
-                }
-            });
+            const saved = localStorage.getItem('orderHistory');
+            if (saved) {
+                orderHistory = JSON.parse(saved);
+            }
         }
 
         function openOrderHistory() {
@@ -1470,7 +1438,21 @@
         }
 
         function updateOrderStatus(orderId, newStatus) {
-            db.ref('orders/' + orderId).update({ status: newStatus });
+            const order = orderHistory.find(o => o.id === orderId);
+            if (order) {
+                order.status = newStatus;
+                localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
+                
+                if (currentRole === 'owner') {
+                    updateOwnerStats();
+                }
+                
+                renderOrderHistory();
+                if (currentRole === 'kitchen') {
+                    renderKitchenOrders();
+                }
+                showNotification('Order status updated', 'success');
+            }
         }
 
         // Kitchen Panel
