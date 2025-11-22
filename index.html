@@ -375,20 +375,20 @@
                     <textarea id="menuItemDescEn" class="w-full px-3 py-2 border rounded-lg" rows="2" placeholder="Description"></textarea>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1">Name (Amharic)</label>
-                    <input type="text" id="menuItemNameAm" class="w-full px-3 py-2 border rounded-lg" placeholder="የምግብ ስም">
+                    <label class="block text-sm font-medium mb-1">Name (Spanish)</label>
+                    <input type="text" id="menuItemNameEs" class="w-full px-3 py-2 border rounded-lg" placeholder="Nombre del artículo">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1">Description (Amharic)</label>
-                    <textarea id="menuItemDescAm" class="w-full px-3 py-2 border rounded-lg" rows="2" placeholder="תיאור"></textarea>
+                    <label class="block text-sm font-medium mb-1">Description (Spanish)</label>
+                    <textarea id="menuItemDescEs" class="w-full px-3 py-2 border rounded-lg" rows="2" placeholder="Descripción"></textarea>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1">Name (Afan Oromo)</label>
-                    <input type="text" id="menuItemNameOm" class="w-full px-3 py-2 border rounded-lg" placeholder="Maqaa Nyaataa">
+                    <label class="block text-sm font-medium mb-1">Name (French)</label>
+                    <input type="text" id="menuItemNameFr" class="w-full px-3 py-2 border rounded-lg" placeholder="Nom de l'article">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1">Description (Afan Oromo)</label>
-                    <textarea id="menuItemDescOm" class="w-full px-3 py-2 border rounded-lg" rows="2" placeholder="Ibsa"></textarea>
+                    <label class="block text-sm font-medium mb-1">Description (French)</label>
+                    <textarea id="menuItemDescFr" class="w-full px-3 py-2 border rounded-lg" rows="2" placeholder="Description"></textarea>
                 </div>
                 <div>
                     <label class="block text-sm font-medium mb-1">Tags</label>
@@ -457,8 +457,8 @@
                         <!-- Language Selector -->
                         <select id="languageSelector" onchange="changeLanguage()" class="px-3 py-2 border rounded-lg">
                             <option value="en">English</option>
-                            <option value="am">አማርኛ</option>
-                            <option value="om">Afan Oromo</option>
+                            <option value="es">Español</option>
+                            <option value="fr">Français</option>
                         </select>
                         
                         <!-- Role-specific buttons -->
@@ -485,7 +485,7 @@
                         </div>
 
                         <div id="kitchenButtons" class="hidden flex items-center space-x-4">
-                             <button onclick="openOrderHistory()" class="text-2xl" title="Orders">
+                            <button onclick="openOrderHistory()" class="text-2xl" title="Orders">
                                 <i class="fas fa-clipboard-list"></i>
                             </button>
                         </div>
@@ -633,41 +633,41 @@
                 ready: 'Ready',
                 delivered: 'Delivered'
             },
-            am: {
-                all: 'ሁሉም',
-                appetizers: 'አስጀማሪ',
-                mains: 'ዋና ዋና ምግቦች',
-                desserts: 'ጣፋጮች',
-                beverages: 'መጠጦች',
-                addToCart: 'ወደ ጋሪ አክል',
-                cart: 'ጋሪ',
-                total: 'ጠቅላላ',
-                placeOrder: 'ትዕዛዝ ይስጡ',
-                orderHistory: 'የትዕዛዝ ታሪክ',
-                searchPlaceholder: 'ምናሌ ይፈልጉ...',
-                orderPlaced: 'ትዕዛዙ በተሳካ ሁኔታ ተሰጥቷል!',
-                pending: 'በመጠባበቅ ላይ',
-                preparing: 'በመዘጋጀት ላይ',
-                ready: 'ዝግጁ',
-                delivered: 'ደረሰ'
+            es: {
+                all: 'Todos',
+                appetizers: 'Aperitivos',
+                mains: 'Platos Principales',
+                desserts: 'Postres',
+                beverages: 'Bebidas',
+                addToCart: 'Añadir al Carrito',
+                cart: 'Carrito',
+                total: 'Total',
+                placeOrder: 'Realizar Pedido',
+                orderHistory: 'Historial de Pedidos',
+                searchPlaceholder: 'Buscar en el menú...',
+                orderPlaced: '¡Pedido realizado con éxito!',
+                pending: 'Pendiente',
+                preparing: 'Preparando',
+                ready: 'Listo',
+                delivered: 'Entregado'
             },
-            om: {
-                all: 'Hundaa',
-                appetizers: 'Nyaata Jalqabaa',
-                mains: 'Nyaata Guddaa',
-                desserts: 'Mi'eessitii',
-                beverages: 'Dhugaatiiwwan',
-                addToCart: 'Gara Gabatee',
-                cart: 'Gabatee',
-                total: 'Ida'ama',
-                placeOrder: 'Ajaja Kenni',
-                orderHistory: 'Seenaa Ajajaa',
-                searchPlaceholder: 'Gabatee Nyaataa Barbaadi...',
-                orderPlaced: 'Ajajni Milkaa'inaan Kennameera!',
-                pending: 'Eegamaa Jira',
-                preparing: 'Qophaa'aa Jira',
-                ready: 'Qophaa'eera',
-                delivered: 'Geessameera'
+            fr: {
+                all: 'Tous',
+                appetizers: 'Entrées',
+                mains: 'Plats Principaux',
+                desserts: 'Desserts',
+                beverages: 'Boissons',
+                addToCart: 'Ajouter au Panier',
+                cart: 'Panier',
+                total: 'Total',
+                placeOrder: 'Passer Commande',
+                orderHistory: 'Historique des Commandes',
+                searchPlaceholder: 'Rechercher dans le menu...',
+                orderPlaced: 'Commande passée avec succès!',
+                pending: 'En attente',
+                preparing: 'En préparation',
+                ready: 'Prêt',
+                delivered: 'Livré'
             }
         };
 
@@ -679,13 +679,183 @@
         let orderHistory = [];
         let currentCategory = 'all';
         let editingMenuItemId = null;
+        let settings = {
+            restaurantName: 'Gourmet Restaurant',
+            address: '123 Main Street, City, Country',
+            logoUrl: 'https://via.placeholder.com/150',
+            social: {
+                facebook: '',
+                instagram: '',
+                twitter: ''
+            },
+            colors: {
+                primary: '#3b82f6',
+                secondary: '#1e40af',
+                bgPrimary: '#ffffff',
+                bgSecondary: '#f3f4f6'
+            }
+        };
+
+        // Load credentials from localStorage or use defaults
+        let credentials = {
+            owner: { username: 'admin', password: 'admin123' },
+            kitchen: { username: 'kitchen', password: 'kitchen123' }
+        };
         
-        let settings = {};
-        let credentials = {};
-        let menuItems = [];
+        function loadCredentials() {
+            db.ref('credentials').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    credentials = data;
+                }
+            });
+        }
+
+        function saveCredentials() {
+            db.ref('credentials').set(credentials);
+        }
+        
+        // New order counter for kitchen alerts
         let lastOrderCount = 0;
 
-        // ===== NOTIFICATION SOUND =====
+        // Menu Items
+        let menuItems = [
+            { 
+                id: 1, 
+                category: 'appetizers', 
+                price: 8.99, 
+                image: 'https://images.unsplash.com/photo-1546793665-c74683f339c1?w=400',
+                tags: 'Vegetarian',
+                translations: {
+                    en: { name: 'Caesar Salad', description: 'Fresh romaine lettuce with parmesan' },
+                    es: { name: 'Ensalada César', description: 'Lechuga romana fresca con parmesano' },
+                    fr: { name: 'Salade César', description: 'Laitue romaine fraîche au parmesan' }
+                }
+            },
+            { 
+                id: 2, 
+                category: 'appetizers', 
+                price: 6.99, 
+                image: 'https://images.unsplash.com/photo-1572695157366-5e585ab2b69f?w=400',
+                tags: 'Vegan, Vegetarian',
+                translations: {
+                    en: { name: 'Bruschetta', description: 'Toasted bread with tomatoes and basil' },
+                    es: { name: 'Bruschetta', description: 'Pan tostado con tomates y albahaca' },
+                    fr: { name: 'Bruschetta', description: 'Pain grillé aux tomates et basilic' }
+                }
+            },
+            { 
+                id: 3, 
+                category: 'mains', 
+                price: 24.99, 
+                image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400',
+                tags: 'Gluten-Free',
+                translations: {
+                    en: { name: 'Grilled Salmon', description: 'Fresh salmon with herbs and lemon' },
+                    es: { name: 'Salmón a la Parrilla', description: 'Salmón fresco con hierbas y limón' },
+                    fr: { name: 'Saumon Grillé', description: 'Saumon frais aux herbes et citron' }
+                }
+            },
+            { 
+                id: 4, 
+                category: 'mains', 
+                price: 32.99, 
+                image: 'https://images.unsplash.com/photo-1558030006-450675393462?w=400',
+                tags: 'Gluten-Free',
+                translations: {
+                    en: { name: 'Ribeye Steak', description: 'Premium cut with seasoning' },
+                    es: { name: 'Filete Ribeye', description: 'Corte premium con condimentos' },
+                    fr: { name: 'Entrecôte', description: 'Coupe premium avec assaisonnement' }
+                }
+            },
+            { 
+                id: 5, 
+                category: 'desserts', 
+                price: 7.99, 
+                image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400',
+                tags: 'Vegetarian',
+                translations: {
+                    en: { name: 'Chocolate Cake', description: 'Rich chocolate layered cake' },
+                    es: { name: 'Pastel de Chocolate', description: 'Rico pastel de chocolate en capas' },
+                    fr: { name: 'Gâteau au Chocolat', description: 'Gâteau au chocolat riche en couches' }
+                }
+            },
+            { 
+                id: 6, 
+                category: 'desserts', 
+                price: 8.99, 
+                image: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400',
+                tags: 'Vegetarian',
+                translations: {
+                    en: { name: 'Tiramisu', description: 'Classic Italian dessert' },
+                    es: { name: 'Tiramisú', description: 'Postre italiano clásico' },
+                    fr: { name: 'Tiramisu', description: 'Dessert italien classique' }
+                }
+            },
+            { 
+                id: 7, 
+                category: 'beverages', 
+                price: 4.99, 
+                image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400',
+                tags: 'Vegan, Gluten-Free',
+                translations: {
+                    en: { name: 'Fresh Juice', description: 'Freshly squeezed orange juice' },
+                    es: { name: 'Jugo Fresco', description: 'Jugo de naranja recién exprimido' },
+                    fr: { name: 'Jus Frais', description: "Jus d'orange fraîchement pressé" }
+                }
+            },
+            { 
+                id: 8, 
+                category: 'beverages', 
+                price: 3.99, 
+                image: 'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=400',
+                tags: 'Vegan, Gluten-Free',
+                translations: {
+                    en: { name: 'Espresso', description: 'Strong Italian coffee' },
+                    es: { name: 'Espresso', description: 'Café italiano fuerte' },
+                    fr: { name: 'Espresso', description: 'Café italien fort' }
+                }
+            }
+        ];
+
+        // Change Credentials (Owner/Kitchen)
+        function changeCredentials() {
+            const newUsername = document.getElementById('newUsername').value;
+            const newPassword = document.getElementById('newPassword').value;
+            
+            if (!newUsername || !newPassword) {
+                showNotification('Please enter both username and password', 'error');
+                return;
+            }
+            
+            if (currentRole === 'owner') {
+                credentials.owner.username = newUsername;
+                credentials.owner.password = newPassword;
+            } else if (currentRole === 'kitchen') {
+                credentials.kitchen.username = newUsername;
+                credentials.kitchen.password = newPassword;
+            }
+            
+            saveCredentials();
+            document.getElementById('newUsername').value = '';
+            document.getElementById('newPassword').value = '';
+            showNotification('Credentials updated successfully!', 'success');
+        }
+        
+        // Check for new orders and alert kitchen
+        function checkForNewOrders() {
+            if (currentRole === 'kitchen') {
+                const currentOrderCount = orderHistory.filter(o => o.status !== 'delivered').length;
+                if (currentOrderCount > lastOrderCount) {
+                    playNotificationSound();
+                    showNotification('🔔 NEW ORDER RECEIVED!', 'success', 5000);
+                    renderKitchenOrders();
+                }
+                lastOrderCount = currentOrderCount;
+            }
+        }
+        
+        // Play notification sound
         function playNotificationSound() {
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
             const oscillator = audioContext.createOscillator();
@@ -694,7 +864,7 @@
             oscillator.connect(gainNode);
             gainNode.connect(audioContext.destination);
             
-            oscillator.frequency.value = 800; // A clear beep
+            oscillator.frequency.value = 800;
             oscillator.type = 'sine';
             
             gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
@@ -704,154 +874,7 @@
             oscillator.stop(audioContext.currentTime + 0.5);
         }
 
-        // ===== DATA HANDLING (FIREBASE) =====
-        function loadCredentials() {
-            db.ref('credentials').on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    credentials = data;
-                } else {
-                    // Set default credentials if none exist in DB
-                    credentials = {
-                        owner: { username: 'admin', password: 'admin123' },
-                        kitchen: { username: 'kitchen', password: 'kitchen123' }
-                    };
-                    db.ref('credentials').set(credentials);
-                }
-            });
-        }
-
-        function saveCredentials() {
-            db.ref('credentials').set(credentials);
-        }
-
-        function loadSettings() {
-            db.ref('settings').on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    settings = data;
-                } else {
-                    // Default settings
-                    settings = {
-                        restaurantName: 'Gourmet Restaurant',
-                        address: '123 Main Street, City, Country',
-                        logoUrl: 'https://via.placeholder.com/150',
-                        social: { facebook: '', instagram: '', twitter: '' },
-                        colors: { primary: '#3b82f6', secondary: '#1e40af', bgPrimary: '#ffffff', bgSecondary: '#f3f4f6' }
-                    };
-                }
-                applySettings();
-            });
-        }
-        
-        function saveSettings() {
-            settings.restaurantName = document.getElementById('restaurantName').value;
-            settings.address = document.getElementById('restaurantAddress').value;
-            settings.logoUrl = document.getElementById('logoUrl').value;
-            settings.social.facebook = document.getElementById('facebookUrl').value;
-            settings.social.instagram = document.getElementById('instagramUrl').value;
-            settings.social.twitter = document.getElementById('twitterUrl').value;
-            settings.colors.primary = document.getElementById('primaryColor').value;
-            settings.colors.secondary = document.getElementById('secondaryColor').value;
-            settings.colors.bgPrimary = document.getElementById('bgColor').value;
-            settings.colors.bgSecondary = document.getElementById('bgSecondaryColor').value;
-            
-            db.ref('settings').set(settings);
-            closeSettings();
-            showNotification('Settings saved successfully!', 'success');
-        }
-
-        function loadMenuItems() {
-            db.ref('menuItems').on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    menuItems = data;
-                }
-                renderMenu();
-                if (currentRole === 'owner') {
-                    renderMenuItemsList();
-                }
-            });
-        }
-
-        function saveMenuItems() {
-            db.ref('menuItems').set(menuItems);
-        }
-
-        function loadOrderHistory() {
-            db.ref('orders').on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    orderHistory = Object.values(data).sort((a, b) => b.id - a.id);
-                } else {
-                    orderHistory = [];
-                }
-                
-                // New order check for kitchen
-                if (currentRole === 'kitchen') {
-                    const activeOrdersCount = orderHistory.filter(o => o.status !== 'delivered').length;
-                    if (lastOrderCount > 0 && activeOrdersCount > lastOrderCount) {
-                        playNotificationSound();
-                        showNotification('🔔 NEW ORDER RECEIVED!', 'success', 5000);
-                    }
-                    lastOrderCount = activeOrdersCount;
-                }
-                
-                if (document.getElementById('orderHistoryModal').classList.contains('active')) {
-                    renderOrderHistory();
-                }
-                if (currentRole === 'kitchen') {
-                    renderKitchenOrders();
-                }
-                if (currentRole === 'owner') {
-                    updateOwnerStats();
-                    renderOwnerOrders();
-                }
-            });
-        }
-        
-        function confirmTable() {
-            const tableNumber = document.getElementById('tableNumber').value;
-            const guestName = document.getElementById('guestName').value;
-            const preferences = document.getElementById('guestPreferences').value;
-            
-            if (!tableNumber) {
-                showNotification('Please enter table/room number', 'error');
-                return;
-            }
-            
-            const orderId = Date.now();
-            const order = {
-                id: orderId,
-                items: [...cart],
-                total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-                date: new Date().toLocaleString(),
-                status: 'pending',
-                tableNumber: tableNumber,
-                guestName: guestName || 'Guest',
-                preferences: preferences || '',
-                language: currentLanguage
-            };
-            
-            db.ref('orders/' + orderId).set(order);
-
-            cart = [];
-            updateCartCount();
-            document.getElementById('tableModal').classList.remove('active');
-            document.getElementById('tableNumber').value = '';
-            document.getElementById('guestName').value = '';
-            document.getElementById('guestPreferences').value = '';
-            
-            const lang = translations[currentLanguage];
-            showNotification(lang.orderPlaced, 'success');
-        }
-
-        function updateOrderStatus(orderId, newStatus) {
-            db.ref('orders/' + orderId).update({ status: newStatus });
-        }
-
-
-        // ===== INITIALIZATION =====
+        // Initialize
         function init() {
             loadCredentials();
             loadSettings();
@@ -886,8 +909,6 @@
                     showOwnerPanel();
                 } else if (currentRole === 'kitchen') {
                     showKitchenPanel();
-                    // Initialize order count for kitchen user
-                    lastOrderCount = orderHistory.filter(o => o.status !== 'delivered').length;
                 }
                 
                 showNotification('Login successful!', 'success');
@@ -950,18 +971,26 @@
         }
 
         // Settings Management
+        function loadSettings() {
+            db.ref('settings').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    settings = data;
+                    applySettings();
+                }
+            });
+        }
+
         function applySettings() {
-            document.getElementById('headerName').textContent = settings.restaurantName || 'Restaurant Name';
-            document.getElementById('headerAddress').textContent = settings.address || 'Address';
-            document.getElementById('footerName').textContent = settings.restaurantName || 'Restaurant Name';
-            document.getElementById('restaurantLogo').src = settings.logoUrl || 'https://via.placeholder.com/150';
+            document.getElementById('headerName').textContent = settings.restaurantName;
+            document.getElementById('headerAddress').textContent = settings.address;
+            document.getElementById('footerName').textContent = settings.restaurantName;
+            document.getElementById('restaurantLogo').src = settings.logoUrl;
             
-            if (settings.colors) {
-                document.documentElement.style.setProperty('--color-primary', settings.colors.primary);
-                document.documentElement.style.setProperty('--color-secondary', settings.colors.secondary);
-                document.documentElement.style.setProperty('--bg-primary', settings.colors.bgPrimary);
-                document.documentElement.style.setProperty('--bg-secondary', settings.colors.bgSecondary);
-            }
+            document.documentElement.style.setProperty('--color-primary', settings.colors.primary);
+            document.documentElement.style.setProperty('--color-secondary', settings.colors.secondary);
+            document.documentElement.style.setProperty('--bg-primary', settings.colors.bgPrimary);
+            document.documentElement.style.setProperty('--bg-secondary', settings.colors.bgSecondary);
             
             updateSocialMedia();
         }
@@ -970,13 +999,13 @@
             const socialContainer = document.getElementById('footerSocial');
             let socialHTML = '';
             
-            if (settings.social?.facebook) {
+            if (settings.social.facebook) {
                 socialHTML += `<a href="${settings.social.facebook}" target="_blank" class="text-2xl hover:opacity-70"><i class="fab fa-facebook"></i></a>`;
             }
-            if (settings.social?.instagram) {
+            if (settings.social.instagram) {
                 socialHTML += `<a href="${settings.social.instagram}" target="_blank" class="text-2xl hover:opacity-70"><i class="fab fa-instagram"></i></a>`;
             }
-            if (settings.social?.twitter) {
+            if (settings.social.twitter) {
                 socialHTML += `<a href="${settings.social.twitter}" target="_blank" class="text-2xl hover:opacity-70"><i class="fab fa-twitter"></i></a>`;
             }
             
@@ -990,44 +1019,55 @@
             }
             
             document.getElementById('settingsModal').classList.add('active');
-            document.getElementById('restaurantName').value = settings.restaurantName || '';
-            document.getElementById('restaurantAddress').value = settings.address || '';
-            document.getElementById('logoUrl').value = settings.logoUrl || '';
-            document.getElementById('facebookUrl').value = settings.social?.facebook || '';
-            document.getElementById('instagramUrl').value = settings.social?.instagram || '';
-            document.getElementById('twitterUrl').value = settings.social?.twitter || '';
-            document.getElementById('primaryColor').value = settings.colors?.primary || '#3b82f6';
-            document.getElementById('secondaryColor').value = settings.colors?.secondary || '#1e40af';
-            document.getElementById('bgColor').value = settings.colors?.bgPrimary || '#ffffff';
-            document.getElementById('bgSecondaryColor').value = settings.colors?.bgSecondary || '#f3f4f6';
+            document.getElementById('restaurantName').value = settings.restaurantName;
+            document.getElementById('restaurantAddress').value = settings.address;
+            document.getElementById('logoUrl').value = settings.logoUrl;
+            document.getElementById('facebookUrl').value = settings.social.facebook || '';
+            document.getElementById('instagramUrl').value = settings.social.instagram || '';
+            document.getElementById('twitterUrl').value = settings.social.twitter || '';
+            document.getElementById('primaryColor').value = settings.colors.primary;
+            document.getElementById('secondaryColor').value = settings.colors.secondary;
+            document.getElementById('bgColor').value = settings.colors.bgPrimary;
+            document.getElementById('bgSecondaryColor').value = settings.colors.bgSecondary;
         }
 
         function closeSettings() {
             document.getElementById('settingsModal').classList.remove('active');
         }
 
-        // Change Credentials
-        function changeCredentials() {
-            const newUsername = document.getElementById('newUsername').value;
-            const newPassword = document.getElementById('newPassword').value;
+        function saveSettings() {
+            settings.restaurantName = document.getElementById('restaurantName').value;
+            settings.address = document.getElementById('restaurantAddress').value;
+            settings.logoUrl = document.getElementById('logoUrl').value;
+            settings.social.facebook = document.getElementById('facebookUrl').value;
+            settings.social.instagram = document.getElementById('instagramUrl').value;
+            settings.social.twitter = document.getElementById('twitterUrl').value;
+            settings.colors.primary = document.getElementById('primaryColor').value;
+            settings.colors.secondary = document.getElementById('secondaryColor').value;
+            settings.colors.bgPrimary = document.getElementById('bgColor').value;
+            settings.colors.bgSecondary = document.getElementById('bgSecondaryColor').value;
             
-            if (!newUsername || !newPassword) {
-                showNotification('Please enter both username and password', 'error');
-                return;
-            }
-            
-            if (currentRole === 'owner' || currentRole === 'kitchen') {
-                 db.ref('credentials/' + currentRole).update({
-                    username: newUsername,
-                    password: newPassword
-                 });
-                 document.getElementById('newUsername').value = '';
-                 document.getElementById('newPassword').value = '';
-                 showNotification('Credentials updated successfully!', 'success');
-            }
+            db.ref('settings').set(settings);
+            closeSettings();
+            showNotification('Settings saved successfully!', 'success');
         }
-        
+
         // Menu Management
+        function loadMenuItems() {
+            db.ref('menuItems').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    menuItems = data;
+                    renderMenu();
+                    renderMenuItemsList();
+                }
+            });
+        }
+
+        function saveMenuItems() {
+            db.ref('menuItems').set(menuItems);
+        }
+
         function openMenuManagement() {
             if (currentRole !== 'owner') {
                 showNotification('Only owner can manage menu', 'error');
@@ -1044,7 +1084,6 @@
 
         function renderMenuItemsList() {
             const container = document.getElementById('menuItemsList');
-            if (!container) return;
             
             container.innerHTML = menuItems.map(item => `
                 <div class="border rounded-lg p-4 flex items-center gap-4">
@@ -1077,17 +1116,16 @@
         function editMenuItem(id) {
             editingMenuItemId = id;
             const item = menuItems.find(i => i.id === id);
-            if (!item) return;
-
+            
             document.getElementById('menuItemModalTitle').textContent = 'Edit Menu Item';
             document.getElementById('menuItemCategory').value = item.category;
             document.getElementById('menuItemPrice').value = item.price;
             document.getElementById('menuItemNameEn').value = item.translations.en.name;
             document.getElementById('menuItemDescEn').value = item.translations.en.description;
-            document.getElementById('menuItemNameAm').value = item.translations.am.name;
-            document.getElementById('menuItemDescAm').value = item.translations.am.description;
-            document.getElementById('menuItemNameOm').value = item.translations.om.name;
-            document.getElementById('menuItemDescOm').value = item.translations.om.description;
+            document.getElementById('menuItemNameEs').value = item.translations.es.name;
+            document.getElementById('menuItemDescEs').value = item.translations.es.description;
+            document.getElementById('menuItemNameFr').value = item.translations.fr.name;
+            document.getElementById('menuItemDescFr').value = item.translations.fr.description;
             document.getElementById('menuItemTags').value = item.tags || '';
             
             if (item.image) {
@@ -1100,8 +1138,9 @@
 
         function deleteMenuItem(id) {
             if (confirm('Are you sure you want to delete this menu item?')) {
-                const updatedMenuItems = menuItems.filter(item => item.id !== id);
-                db.ref('menuItems').set(updatedMenuItems);
+                menuItems = menuItems.filter(item => item.id !== id);
+                saveMenuItems();
+                renderMenuItemsList();
                 showNotification('Menu item deleted', 'success');
             }
         }
@@ -1111,12 +1150,11 @@
             document.getElementById('menuItemPrice').value = '';
             document.getElementById('menuItemNameEn').value = '';
             document.getElementById('menuItemDescEn').value = '';
-            document.getElementById('menuItemNameAm').value = '';
-            document.getElementById('menuItemDescAm').value = '';
-            document.getElementById('menuItemNameOm').value = '';
-            document.getElementById('menuItemDescOm').value = '';
+            document.getElementById('menuItemNameEs').value = '';
+            document.getElementById('menuItemDescEs').value = '';
+            document.getElementById('menuItemNameFr').value = '';
+            document.getElementById('menuItemDescFr').value = '';
             document.getElementById('menuItemTags').value = '';
-            document.getElementById('menuItemImage').value = '';
             document.getElementById('menuItemImagePreview').classList.add('hidden');
         }
 
@@ -1126,38 +1164,47 @@
         }
 
         function saveMenuItem() {
-            const id = editingMenuItemId || Date.now();
             const newItem = {
-                id: id,
+                id: editingMenuItemId || Date.now(),
                 category: document.getElementById('menuItemCategory').value,
                 price: parseFloat(document.getElementById('menuItemPrice').value),
                 image: document.getElementById('menuItemImagePreview').src || 'https://via.placeholder.com/400',
                 tags: document.getElementById('menuItemTags').value,
                 translations: {
-                    en: { name: document.getElementById('menuItemNameEn').value, description: document.getElementById('menuItemDescEn').value },
-                    am: { name: document.getElementById('menuItemNameAm').value, description: document.getElementById('menuItemDescAm').value },
-                    om: { name: document.getElementById('menuItemNameOm').value, description: document.getElementById('menuItemDescOm').value }
+                    en: {
+                        name: document.getElementById('menuItemNameEn').value,
+                        description: document.getElementById('menuItemDescEn').value
+                    },
+                    es: {
+                        name: document.getElementById('menuItemNameEs').value,
+                        description: document.getElementById('menuItemDescEs').value
+                    },
+                    fr: {
+                        name: document.getElementById('menuItemNameFr').value,
+                        description: document.getElementById('menuItemDescFr').value
+                    }
                 }
             };
             
-            const updatedMenuItems = [...menuItems];
             if (editingMenuItemId) {
-                const index = updatedMenuItems.findIndex(i => i.id === editingMenuItemId);
-                updatedMenuItems[index] = newItem;
+                const index = menuItems.findIndex(i => i.id === editingMenuItemId);
+                menuItems[index] = newItem;
             } else {
-                updatedMenuItems.push(newItem);
+                menuItems.push(newItem);
             }
             
-            db.ref('menuItems').set(updatedMenuItems);
+            saveMenuItems();
             closeMenuItemModal();
+            renderMenuItemsList();
+            if (currentRole === 'guest') {
+                renderMenu();
+            }
             showNotification('Menu item saved!', 'success');
         }
 
         // Menu Rendering
         function renderMenu() {
             const container = document.getElementById('menuContainer');
-            if(!container) return;
-
             const lang = translations[currentLanguage];
             
             const filtered = currentCategory === 'all' 
@@ -1165,9 +1212,9 @@
                 : menuItems.filter(item => item.category === currentCategory);
             
             container.innerHTML = filtered.map(item => {
-                const itemData = item.translations[currentLanguage] || item.translations.en;
+                const itemData = item.translations[currentLanguage];
                 return `
-                    <div class="menu-item-card bg-white rounded-lg shadow-md overflow-hidden fade-in" data-category="${item.category}" data-name="${item.translations.en.name.toLowerCase()}">
+                    <div class="menu-item-card bg-white rounded-lg shadow-md overflow-hidden fade-in" data-category="${item.category}">
                         <img src="${item.image}" alt="${itemData.name}" class="w-full h-48 object-cover">
                         <div class="p-4">
                             <h3 class="text-xl font-bold mb-2">${itemData.name}</h3>
@@ -1200,24 +1247,28 @@
 
         function searchMenu() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
             document.querySelectorAll('.menu-item-card').forEach(card => {
-                const name = card.dataset.name;
-                card.style.display = name.includes(searchTerm) ? 'block' : 'none';
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(searchTerm) ? 'block' : 'none';
             });
         }
 
         // Cart Management
         function addToCart(itemId) {
             const item = menuItems.find(i => i.id === itemId);
-            if (!item) return;
-
-            const itemData = item.translations[currentLanguage] || item.translations.en;
+            const itemData = item.translations[currentLanguage];
             
             const cartItem = cart.find(i => i.id === itemId);
             if (cartItem) {
                 cartItem.quantity++;
             } else {
-                cart.push({ id: itemId, name: itemData.name, price: item.price, quantity: 1 });
+                cart.push({
+                    id: itemId,
+                    name: itemData.name,
+                    price: item.price,
+                    quantity: 1
+                });
             }
             
             updateCartCount();
@@ -1292,11 +1343,65 @@
                 showNotification('Your cart is empty!', 'error');
                 return;
             }
+            
             closeCart();
             document.getElementById('tableModal').classList.add('active');
         }
 
+        function confirmTable() {
+            const tableNumber = document.getElementById('tableNumber').value;
+            const guestName = document.getElementById('guestName').value;
+            const preferences = document.getElementById('guestPreferences').value;
+            
+            if (!tableNumber) {
+                showNotification('Please enter table/room number', 'error');
+                return;
+            }
+            
+            const orderId = Date.now();
+            const order = {
+                id: orderId,
+                items: [...cart],
+                total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+                date: new Date().toLocaleString(),
+                status: 'pending',
+                tableNumber: tableNumber,
+                guestName: guestName || 'Guest',
+                preferences: preferences || '',
+                language: currentLanguage
+            };
+            
+            db.ref('orders/' + orderId).set(order);
+
+            cart = [];
+            updateCartCount();
+            document.getElementById('tableModal').classList.remove('active');
+            document.getElementById('tableNumber').value = '';
+            document.getElementById('guestName').value = '';
+            document.getElementById('guestPreferences').value = '';
+            
+            const lang = translations[currentLanguage];
+            showNotification(lang.orderPlaced, 'success');
+        }
+
         // Order History
+        function loadOrderHistory() {
+            db.ref('orders').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    orderHistory = Object.values(data);
+                    renderOrderHistory();
+                    if (currentRole === 'kitchen') {
+                        renderKitchenOrders();
+                    }
+                    if (currentRole === 'owner') {
+                        updateOwnerStats();
+                        renderOwnerOrders();
+                    }
+                }
+            });
+        }
+
         function openOrderHistory() {
             document.getElementById('orderHistoryModal').classList.add('active');
             renderOrderHistory();
@@ -1308,16 +1413,21 @@
 
         function renderOrderHistory() {
             const container = document.getElementById('orderHistoryItems');
-            if (!container) return;
-
-            if (orderHistory.length === 0) {
+            
+            let orders = orderHistory;
+            if (currentRole === 'guest') {
+                orders = orderHistory.slice(0, 10);
+            }
+            
+            if (orders.length === 0) {
                 container.innerHTML = '<p class="text-gray-500 text-center py-8">No orders yet</p>';
                 return;
             }
             
-            container.innerHTML = orderHistory.map(order => {
-                const statusClass = `status-${order.status}`;
-                const lang = translations[order.language || 'en'];
+            container.innerHTML = orders.map(order => {
+                const statusClass = order.status === 'delivered' ? 'status-delivered' :
+                                   order.status === 'ready' ? 'status-ready' :
+                                   order.status === 'preparing' ? 'status-preparing' : 'status-pending';
                 
                 return `
                     <div class="border rounded-lg p-4 custom-bg">
@@ -1330,7 +1440,7 @@
                             </div>
                             <div class="flex gap-2 items-center">
                                 <span class="status-badge ${statusClass}">
-                                    ${lang[order.status]}
+                                    ${translations[order.language || 'en'][order.status]}
                                 </span>
                                 ${currentRole === 'owner' || currentRole === 'kitchen' ? `
                                     <select onchange="updateOrderStatus(${order.id}, this.value)" class="px-2 py-1 border rounded text-sm">
@@ -1359,11 +1469,13 @@
             }).join('');
         }
 
+        function updateOrderStatus(orderId, newStatus) {
+            db.ref('orders/' + orderId).update({ status: newStatus });
+        }
+
         // Kitchen Panel
         function renderKitchenOrders() {
             const container = document.getElementById('kitchenOrders');
-            if (!container) return;
-
             const activeOrders = orderHistory.filter(o => o.status !== 'delivered');
             
             if (activeOrders.length === 0) {
@@ -1372,7 +1484,8 @@
             }
             
             container.innerHTML = activeOrders.map(order => {
-                const statusClass = `status-${order.status}`;
+                const statusClass = order.status === 'ready' ? 'status-ready' :
+                                   order.status === 'preparing' ? 'status-preparing' : 'status-pending';
                 
                 return `
                     <div class="border rounded-lg p-6 bg-white shadow-md">
@@ -1389,8 +1502,15 @@
                             ${order.items.map(item => `
                                 <div class="flex justify-between text-lg">
                                     <span><strong>${item.name}</strong> x${item.quantity}</span>
+                                    <span>$${(item.price * item.quantity).toFixed(2)}</span>
                                 </div>
                             `).join('')}
+                        </div>
+                        <div class="border-t pt-3 mb-4">
+                            <div class="flex justify-between text-xl font-bold">
+                                <span>Total:</span>
+                                <span>$${order.total.toFixed(2)}</span>
+                            </div>
                         </div>
                         <div class="flex gap-2">
                             <button onclick="updateOrderStatus(${order.id}, 'preparing')" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-lg font-semibold">
@@ -1430,33 +1550,7 @@
         }
 
         function renderOwnerOrders() {
-            const container = document.getElementById('ownerOrders');
-            if(!container) return;
-            container.innerHTML = orderHistory.map(order => {
-                const statusClass = `status-${order.status}`;
-                const lang = translations[order.language || 'en'];
-                
-                return `
-                    <div class="border rounded-lg p-4 custom-bg">
-                        <div class="flex justify-between items-start mb-3">
-                            <div>
-                                <h3 class="font-bold text-lg">Order #${order.id}</h3>
-                                <p class="text-sm text-gray-600">${order.date}</p>
-                                <p class="text-sm font-semibold">${order.tableNumber} - ${order.guestName}</p>
-                            </div>
-                            <div class="flex gap-2 items-center">
-                                <span class="status-badge ${statusClass}">${lang[order.status]}</span>
-                                <select onchange="updateOrderStatus(${order.id}, this.value)" class="px-2 py-1 border rounded text-sm">
-                                    <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
-                                    <option value="preparing" ${order.status === 'preparing' ? 'selected' : ''}>Preparing</option>
-                                    <option value="ready" ${order.status === 'ready' ? 'selected' : ''}>Ready</option>
-                                    <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
+            renderOrderHistory();
         }
 
         function sendOwnerNotification() {
@@ -1489,16 +1583,16 @@
             container.appendChild(notification);
             
             setTimeout(() => {
-                if (notification.parentElement) {
-                    notification.remove();
-                }
+                notification.remove();
             }, duration);
         }
 
         // Language Change
         function changeLanguage() {
             currentLanguage = document.getElementById('languageSelector').value;
-            renderMenu();
+            if (currentRole === 'guest') {
+                renderMenu();
+            }
             if (document.getElementById('cartModal').classList.contains('active')) {
                 renderCart();
             }
@@ -1516,7 +1610,7 @@
                     reader.readAsDataURL(file);
                 }
             });
-            
+
             document.getElementById('bgImageUpload').addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
@@ -1525,6 +1619,7 @@
                         document.body.style.backgroundImage = `url(${event.target.result})`;
                         document.body.style.backgroundSize = 'cover';
                         document.body.style.backgroundAttachment = 'fixed';
+                        localStorage.setItem('bgImage', event.target.result);
                     };
                     reader.readAsDataURL(file);
                 }
@@ -1542,11 +1637,19 @@
                 }
             });
 
+            const savedBg = localStorage.getItem('bgImage');
+            if (savedBg) {
+                document.body.style.backgroundImage = `url(${savedBg})`;
+                document.body.style.backgroundSize = 'cover';
+                document.body.style.backgroundAttachment = 'fixed';
+            }
+
             init();
         });
 
         function removeBgImage() {
             document.body.style.backgroundImage = '';
+            localStorage.removeItem('bgImage');
             showNotification('Background image removed', 'success');
         }
     </script>
