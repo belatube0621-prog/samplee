@@ -3,1637 +3,923 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restaurant Management System</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Restaurant Menu & Ordering System</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         :root {
-            --bg-primary: #ffffff;
-            --bg-secondary: #f3f4f6;
-            --color-primary: #3b82f6;
-            --color-secondary: #1e40af;
-            --text-primary: #1f2937;
-            --text-secondary: #6b7280;
+            --primary-color: #f9fafb; /* Default background */
+            --secondary-color: #1f2937; /* Default text */
         }
-
         body {
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
         }
-
-        .custom-bg {
-            background-color: var(--bg-secondary);
+        .menu-item {
+            transition: transform 0.2s;
         }
-
-        .btn-primary {
-            background-color: var(--color-primary);
-            color: white;
+        .menu-item:hover {
+            transform: scale(1.05);
         }
-
-        .btn-primary:hover {
-            background-color: var(--color-secondary);
-        }
-
-        .notification {
-            animation: slideIn 0.5s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.3s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .cart-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background-color: #ef4444;
-            color: white;
-            border-radius: 9999px;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-        }
-
-        .menu-item-card {
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .menu-item-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
+        #login-modal, #kitchen-view {
             background-color: rgba(0,0,0,0.5);
-        }
-
-        .modal.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .panel-hidden {
-            display: none;
-        }
-
-        .status-badge {
-            padding: 4px 12px;
-            border-radius: 9999px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .status-pending {
-            background-color: #fef3c7;
-            color: #92400e;
-        }
-
-        .status-preparing {
-            background-color: #dbeafe;
-            color: #1e40af;
-        }
-
-        .status-ready {
-            background-color: #d1fae5;
-            color: #065f46;
-        }
-
-        .status-delivered {
-            background-color: #e5e7eb;
-            color: #374151;
         }
     </style>
 </head>
-<body>
+<body class="font-sans">
+
     <!-- Login Modal -->
-    <div id="loginModal" class="modal active">
-        <div class="bg-white rounded-lg shadow-xl p-8 m-4 max-w-md w-full">
-            <h2 class="text-3xl font-bold mb-6 text-center">Welcome</h2>
-            
-            <div class="space-y-4">
-                <button onclick="selectRole('guest')" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-4 rounded-lg font-semibold text-lg">
-                    <i class="fas fa-user mr-2"></i> Continue as Guest
-                </button>
-                
-                <button onclick="selectRole('kitchen')" class="w-full bg-green-500 hover:bg-green-600 text-white px-6 py-4 rounded-lg font-semibold text-lg">
-                    <i class="fas fa-utensils mr-2"></i> Kitchen Staff Login
-                </button>
-                
-                <button onclick="selectRole('owner')" class="w-full bg-purple-500 hover:bg-purple-600 text-white px-6 py-4 rounded-lg font-semibold text-lg">
-                    <i class="fas fa-crown mr-2"></i> Owner Login
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Authentication Modal -->
-    <div id="authModal" class="modal">
-        <div class="bg-white rounded-lg shadow-xl p-8 m-4 max-w-md w-full">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold" id="authTitle">Login</h2>
-                <button onclick="closeAuth()" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times text-2xl"></i>
-                </button>
-            </div>
-            
+    <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="bg-white p-8 rounded-lg shadow-xl w-96">
+            <h2 class="text-2xl font-bold mb-4">Login</h2>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium mb-1">Username</label>
-                    <input type="text" id="authUsername" class="w-full px-4 py-2 border rounded-lg" placeholder="Enter username">
+                    <label for="username-input" class="block">Username:</label>
+                    <input type="text" id="username-input" class="w-full p-2 border rounded" value="owner">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1">Password</label>
-                    <input type="password" id="authPassword" class="w-full px-4 py-2 border rounded-lg" placeholder="Enter password">
+                    <label for="password-input" class="block">Password:</label>
+                    <input type="password" id="password-input" class="w-full p-2 border rounded" value="kitchenpass456">
                 </div>
-                <button onclick="authenticate()" class="w-full btn-primary px-4 py-3 rounded-lg font-semibold">
-                    Login
-                </button>
+                <div class="flex justify-end space-x-2">
+                     <button onclick="hideLoginModal()" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Cancel</button>
+                    <button onclick="login()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Login</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Table/Room Number Modal -->
-    <div id="tableModal" class="modal">
-        <div class="bg-white rounded-lg shadow-xl p-8 m-4 max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <h2 class="text-2xl font-bold mb-6">Enter Your Location</h2>
-            
-            <div class="space-y-4">
+    <!-- Header -->
+    <header class="bg-gray-800 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center">
+                <img id="logo" src="https://via.placeholder.com/50" alt="Logo" class="h-12 w-12 mr-4 rounded-full">
                 <div>
-                    <label class="block text-sm font-medium mb-1">Table Number / Room Number</label>
-                    <input type="text" id="tableNumber" class="w-full px-4 py-2 border rounded-lg" placeholder="e.g., Table 5 or Room 201">
+                    <h1 id="hotel-name" class="text-2xl font-bold">Hotel Name</h1>
+                    <p id="hotel-address" class="text-sm">123 Main Street, Cityville, ST 12345</p>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Guest Name (Optional)</label>
-                    <input type="text" id="guestName" class="w-full px-4 py-2 border rounded-lg" placeholder="Your name">
+            </div>
+             <div class="flex items-center space-x-4">
+                <div id="social-media" class="flex space-x-4">
+                    <a href="#" class="text-white hover:text-gray-400">Facebook</a>
+                    <a href="#" class="text-white hover:text-gray-400">Instagram</a>
+                    <a href="#" class="text-white hover:text-gray-400">Twitter</a>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Allergies & Preferences</label>
-                    <textarea id="guestPreferences" class="w-full px-4 py-2 border rounded-lg" rows="3" placeholder="Please mention any food allergies, dietary restrictions, or special preferences (e.g., no nuts, vegetarian, extra spicy, etc.)"></textarea>
-                    <p class="text-xs text-gray-500 mt-1">This information will be shared with the kitchen staff</p>
-                </div>
-                <button onclick="confirmTable()" class="w-full btn-primary px-4 py-3 rounded-lg font-semibold">
-                    Confirm & Place Order
-                </button>
+                <button id="login-button" onclick="showLoginModal()" class="bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600">Owner Login</button>
+                <button id="logout-button" onclick="logout()" class="hidden bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600">Logout</button>
             </div>
         </div>
-    </div>
+    </header>
 
-    <!-- Settings Modal (Owner Only) -->
-    <div id="settingsModal" class="modal">
-        <div class="bg-white rounded-lg shadow-xl p-6 m-4 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold">Settings & Customization</h2>
-                <button onclick="closeSettings()" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times text-2xl"></i>
-                </button>
+    <!-- Navigation -->
+    <nav id="main-nav" class="bg-gray-700 p-2 sticky top-0 z-40">
+        <!-- JS will populate this based on user role -->
+    </nav>
+
+    <main class="container mx-auto p-4">
+        <!-- GUEST VIEWS -->
+        <section id="menu-view">
+            <h2 class="text-3xl font-bold mb-4 border-b pb-2">Menu</h2>
+            <div class="mb-4 flex space-x-4">
+                <input type="text" id="menu-search" placeholder="Search for a dish..." onkeyup="renderMenu()" class="w-full p-2 border rounded">
+                <select id="language-selector" onchange="renderMenu()" class="bg-white border text-gray-800 p-2 rounded">
+                    <option value="en">English</option>
+                    <option value="am">Amharic</option>
+                    <option value="om">Afan Oromo</option>
+                    <option value="ti">Tigrigna</option>
+                </select>
             </div>
-            
-            <!-- Change Credentials (Owner/Kitchen) -->
-            <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h3 class="text-lg font-semibold mb-3">Change Login Credentials</h3>
-                <div class="space-y-3">
-                    <div>
-                        <label class="block text-sm font-medium mb-1">New Username</label>
-                        <input type="text" id="newUsername" class="w-full px-3 py-2 border rounded-lg" placeholder="Enter new username">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">New Password</label>
-                        <input type="password" id="newPassword" class="w-full px-3 py-2 border rounded-lg" placeholder="Enter new password">
-                    </div>
-                    <button onclick="changeCredentials()" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold">
-                        Update Credentials
-                    </button>
+            <div id="menu-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </section>
+
+        <section id="order-history-view" class="hidden">
+            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                <h2 class="text-3xl font-bold">My Order History</h2>
+                <button onclick="clearOrderHistory()" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Clear My History</button>
+            </div>
+            <div id="order-history-container"></div>
+        </section>
+
+        <section id="photo-upload-view" class="hidden">
+            <h2 class="text-3xl font-bold mb-4 border-b pb-2">Upload a Photo</h2>
+            <input type="file" id="photo-input" class="mb-4">
+            <div id="photo-preview-container"></div>
+        </section>
+
+        <!-- OWNER VIEWS -->
+        <section id="owner-dashboard-view" class="hidden">
+            <h2 class="text-3xl font-bold mb-4 border-b pb-2">Owner Dashboard</h2>
+            <p>Welcome, Owner. Manage your restaurant from here.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div class="bg-white p-4 rounded-lg shadow">
+                    <h3 class="text-xl font-bold">All Orders</h3>
+                    <div id="all-orders-owner-summary" class="mt-2"></div>
+                </div>
+                 <div class="bg-white p-4 rounded-lg shadow">
+                    <h3 class="text-xl font-bold">Quick Stats</h3>
+                    <p>Total Orders: <span id="total-orders-stat">0</span></p>
+                    <p>Total Revenue: $<span id="total-revenue-stat">0.00</span></p>
                 </div>
             </div>
-
-            <!-- Restaurant Info -->
-            <div class="mb-6">
-                <h3 class="text-lg font-semibold mb-3">Restaurant Information</h3>
-                <div class="space-y-3">
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Restaurant Name</label>
-                        <input type="text" id="restaurantName" class="w-full px-3 py-2 border rounded-lg" placeholder="Enter restaurant name">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Address</label>
-                        <input type="text" id="restaurantAddress" class="w-full px-3 py-2 border rounded-lg" placeholder="Enter address">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Logo URL</label>
-                        <input type="text" id="logoUrl" class="w-full px-3 py-2 border rounded-lg" placeholder="Enter logo URL">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Upload Logo</label>
-                        <input type="file" id="logoUpload" accept="image/*" class="w-full px-3 py-2 border rounded-lg">
-                    </div>
-                </div>
+        </section>
+        
+        <section id="all-orders-view" class="hidden">
+            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                <h2 class="text-3xl font-bold">All Guest Orders</h2>
+                <button onclick="printAllOrders()" class="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600">Print All Orders</button>
             </div>
-
-            <!-- Social Media Links -->
-            <div class="mb-6">
-                <h3 class="text-lg font-semibold mb-3">Social Media</h3>
-                <div class="space-y-3">
-                    <div>
-                        <label class="block text-sm font-medium mb-1"><i class="fab fa-facebook"></i> Facebook</label>
-                        <input type="text" id="facebookUrl" class="w-full px-3 py-2 border rounded-lg" placeholder="Facebook URL">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1"><i class="fab fa-instagram"></i> Instagram</label>
-                        <input type="text" id="instagramUrl" class="w-full px-3 py-2 border rounded-lg" placeholder="Instagram URL">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1"><i class="fab fa-twitter"></i> Twitter</label>
-                        <input type="text" id="twitterUrl" class="w-full px-3 py-2 border rounded-lg" placeholder="Twitter URL">
-                    </div>
-                </div>
+            <div id="all-orders-container"></div>
+        </section>
+        
+        <section id="edit-menu-view" class="hidden">
+            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                 <h2 class="text-3xl font-bold">Edit Menu</h2>
+                 <button onclick="openMenuEditorModal()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Add New Item</button>
             </div>
+            <div id="menu-editor-container" class="space-y-4"></div>
+        </section>
 
-            <!-- Color Customization -->
-            <div class="mb-6">
-                <h3 class="text-lg font-semibold mb-3">Color Theme</h3>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Primary Color</label>
-                        <input type="color" id="primaryColor" class="w-full h-10 border rounded-lg cursor-pointer">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Secondary Color</label>
-                        <input type="color" id="secondaryColor" class="w-full h-10 border rounded-lg cursor-pointer">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Background Color</label>
-                        <input type="color" id="bgColor" class="w-full h-10 border rounded-lg cursor-pointer">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Secondary BG Color</label>
-                        <input type="color" id="bgSecondaryColor" class="w-full h-10 border rounded-lg cursor-pointer">
-                    </div>
-                </div>
-            </div>
 
-            <!-- Background Image -->
-            <div class="mb-6">
-                <h3 class="text-lg font-semibold mb-3">Background Image</h3>
-                <input type="file" id="bgImageUpload" accept="image/*" class="w-full px-3 py-2 border rounded-lg mb-2">
-                <button onclick="removeBgImage()" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
-                    Remove Background Image
-                </button>
-            </div>
-
-            <button onclick="saveSettings()" class="w-full btn-primary px-4 py-3 rounded-lg font-semibold">
-                Save Settings
-            </button>
-        </div>
-    </div>
-
-    <!-- Menu Management Modal (Owner Only) -->
-    <div id="menuManagementModal" class="modal">
-        <div class="bg-white rounded-lg shadow-xl p-6 m-4 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold">Menu Management</h2>
-                <button onclick="closeMenuManagement()" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times text-2xl"></i>
-                </button>
-            </div>
-            
-            <div class="mb-6">
-                <button onclick="showAddMenuItem()" class="btn-primary px-6 py-3 rounded-lg font-semibold">
-                    <i class="fas fa-plus mr-2"></i> Add New Menu Item
-                </button>
-            </div>
-
-            <div id="menuItemsList" class="space-y-4"></div>
-        </div>
-    </div>
-
-    <!-- Add/Edit Menu Item Modal -->
-    <div id="menuItemModal" class="modal">
-        <div class="bg-white rounded-lg shadow-xl p-6 m-4 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold" id="menuItemModalTitle">Add Menu Item</h2>
-                <button onclick="closeMenuItemModal()" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times text-2xl"></i>
-                </button>
-            </div>
-            
-            <div class="space-y-4">
+        <section id="settings-view" class="hidden">
+            <h2 class="text-3xl font-bold mb-4 border-b pb-2">Website Settings</h2>
+            <div class="space-y-4 bg-white p-6 rounded-lg shadow">
+                 <h3 class="text-xl font-bold mb-2">Branding & Appearance</h3>
                 <div>
-                    <label class="block text-sm font-medium mb-1">Image Upload</label>
-                    <input type="file" id="menuItemImage" accept="image/*" class="w-full px-3 py-2 border rounded-lg">
-                    <img id="menuItemImagePreview" class="mt-2 max-h-48 rounded-lg hidden">
+                    <label for="hotel-name-input" class="block">Hotel Name:</label>
+                    <input type="text" id="hotel-name-input" class="w-full p-2 border rounded">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1">Category</label>
-                    <select id="menuItemCategory" class="w-full px-3 py-2 border rounded-lg">
-                        <option value="appetizers">Appetizers</option>
-                        <option value="mains">Main Courses</option>
-                        <option value="desserts">Desserts</option>
-                        <option value="beverages">Beverages</option>
+                    <label for="hotel-address-input" class="block">Address:</label>
+                    <input type="text" id="hotel-address-input" class="w-full p-2 border rounded">
+                </div>
+                <div>
+                    <label for="logo-url-input" class="block">Logo URL:</label>
+                    <input type="text" id="logo-url-input" class="w-full p-2 border rounded">
+                </div>
+                <div>
+                    <label for="facebook-url-input" class="block">Facebook URL:</label>
+                    <input type="text" id="facebook-url-input" class="w-full p-2 border rounded">
+                </div>
+                <div>
+                    <label for="instagram-url-input" class="block">Instagram URL:</label>
+                    <input type="text" id="instagram-url-input" class="w-full p-2 border rounded">
+                </div>
+                <div>
+                    <label for="twitter-url-input" class="block">Twitter URL:</label>
+                    <input type="text" id="twitter-url-input" class="w-full p-2 border rounded">
+                </div>
+                <div>
+                    <label for="bg-color-input" class="block">Background Color:</label>
+                    <input type="color" id="bg-color-input" class="p-1 h-10 w-14 block border cursor-pointer rounded">
+                </div>
+                <div>
+                    <label for="text-color-input" class="block">Text Color:</label>
+                    <input type="color" id="text-color-input" class="p-1 h-10 w-14 block border cursor-pointer rounded">
+                </div>
+                <button onclick="applySettings()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Save General Settings</button>
+
+                <div class="mt-8 pt-4 border-t">
+                    <h3 class="text-xl font-bold mb-2">Security Settings</h3>
+                    <div>
+                        <label for="new-username-input" class="block">New Username:</label>
+                        <input type="text" id="new-username-input" class="w-full p-2 border rounded">
+                    </div>
+                    <div class="mt-2">
+                        <label for="new-password-input" class="block">New Password:</label>
+                        <input type="password" id="new-password-input" class="w-full p-2 border rounded" placeholder="Leave blank to keep current password">
+                    </div>
+                    <button onclick="updateCredentials()" class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 mt-4">Update Credentials</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- KITCHEN VIEW -->
+        <div id="kitchen-view" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+             <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-4xl h-5/6 overflow-y-auto">
+                <h2 class="text-3xl font-bold mb-4 border-b pb-2">Live Kitchen Orders</h2>
+                <div id="kitchen-orders-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Kitchen orders will be injected here -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Floating Cart (Guest only) -->
+    <div id="cart-container" class="fixed bottom-4 right-4">
+        <div class="bg-white rounded-lg shadow-xl p-4 w-80 border">
+            <h3 class="text-xl font-bold">Current Order</h3>
+            <div id="cart-items" class="my-2 max-h-40 overflow-y-auto">Your cart is empty.</div>
+            <div class="mt-2">
+                <label for="order-preferences" class="block text-sm font-medium">Allergies or Preferences:</label>
+                <textarea id="order-preferences" rows="2" class="w-full p-2 border rounded" placeholder="e.g., no nuts, extra spicy"></textarea>
+            </div>
+            <div id="cart-total" class="font-bold text-lg border-t pt-2 mt-2">Total: $0.00</div>
+            <button onclick="placeOrder()" class="bg-green-500 text-white w-full py-2 mt-2 rounded hover:bg-green-600">Place Order</button>
+        </div>
+    </div>
+    
+    <!-- Menu Item Editor Modal -->
+    <div id="menu-editor-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden" style="background-color: rgba(0,0,0,0.5);">
+        <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
+            <h2 id="menu-editor-title" class="text-2xl font-bold mb-4">Add Menu Item</h2>
+            <form id="menu-editor-form" onsubmit="saveMenuItem(event)" class="space-y-4">
+                <input type="hidden" id="menu-item-id">
+                <div>
+                    <label for="menu-item-lang" class="block">Language:</label>
+                    <select id="menu-item-lang" class="w-full p-2 border rounded">
+                        <option value="en">English</option>
+                        <option value="am">Amharic</option>
+                        <option value="om">Afan Oromo</option>
+                        <option value="ti">Tigrigna</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1">Price ($)</label>
-                    <input type="number" id="menuItemPrice" step="0.01" class="w-full px-3 py-2 border rounded-lg" placeholder="0.00">
+                    <label for="menu-item-category" class="block">Category Name:</label>
+                    <input type="text" id="menu-item-category" class="w-full p-2 border rounded" required>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1">Name (English)</label>
-                    <input type="text" id="menuItemNameEn" class="w-full px-3 py-2 border rounded-lg" placeholder="Item name">
+                    <label for="menu-item-name" class="block">Item Name:</label>
+                    <input type="text" id="menu-item-name" class="w-full p-2 border rounded" required>
+                </div>
+                 <div>
+                    <label for="menu-item-description" class="block">Description:</label>
+                    <textarea id="menu-item-description" rows="3" class="w-full p-2 border rounded" required></textarea>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1">Description (English)</label>
-                    <textarea id="menuItemDescEn" class="w-full px-3 py-2 border rounded-lg" rows="2" placeholder="Description"></textarea>
+                    <label for="menu-item-price" class="block">Price:</label>
+                    <input type="number" step="0.01" id="menu-item-price" class="w-full p-2 border rounded" required>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1">Name (Spanish)</label>
-                    <input type="text" id="menuItemNameEs" class="w-full px-3 py-2 border rounded-lg" placeholder="Nombre del artículo">
+                    <label for="menu-item-tags" class="block">Tags (comma-separated):</label>
+                    <input type="text" id="menu-item-tags" class="w-full p-2 border rounded" placeholder="e.g. vegetarian, spicy, gluten-free">
                 </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Description (Spanish)</label>
-                    <textarea id="menuItemDescEs" class="w-full px-3 py-2 border rounded-lg" rows="2" placeholder="Descripción"></textarea>
+                <div class="flex justify-end space-x-2">
+                    <button type="button" onclick="closeMenuEditorModal()" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Cancel</button>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Save Item</button>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Name (French)</label>
-                    <input type="text" id="menuItemNameFr" class="w-full px-3 py-2 border rounded-lg" placeholder="Nom de l'article">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Description (French)</label>
-                    <textarea id="menuItemDescFr" class="w-full px-3 py-2 border rounded-lg" rows="2" placeholder="Description"></textarea>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Tags</label>
-                    <input type="text" id="menuItemTags" class="w-full px-3 py-2 border rounded-lg" placeholder="e.g., Vegetarian, Gluten-Free, Spicy, Vegan (comma separated)">
-                    <p class="text-xs text-gray-500 mt-1">Add tags for dietary information and preferences</p>
-                </div>
-                <button onclick="saveMenuItem()" class="w-full btn-primary px-4 py-3 rounded-lg font-semibold">
-                    Save Menu Item
-                </button>
-            </div>
+            </form>
         </div>
     </div>
 
-    <!-- Cart Modal -->
-    <div id="cartModal" class="modal">
-        <div class="bg-white rounded-lg shadow-xl p-6 m-4 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold">Shopping Cart</h2>
-                <button onclick="closeCart()" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times text-2xl"></i>
-                </button>
-            </div>
-            <div id="cartItems" class="space-y-4 mb-6"></div>
-            <div class="border-t pt-4">
-                <div class="flex justify-between text-xl font-bold mb-4">
-                    <span>Total:</span>
-                    <span id="cartTotal">$0.00</span>
-                </div>
-                <button onclick="proceedToOrder()" class="w-full btn-primary px-4 py-3 rounded-lg font-semibold">
-                    Proceed to Order
-                </button>
-            </div>
-        </div>
-    </div>
+    <!-- Notifications -->
+    <div id="notifications-container" class="fixed top-20 right-4 space-y-2 z-50"></div>
 
-    <!-- Order History Modal -->
-    <div id="orderHistoryModal" class="modal">
-        <div class="bg-white rounded-lg shadow-xl p-6 m-4 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold">Order History</h2>
-                <button onclick="closeOrderHistory()" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times text-2xl"></i>
-                </button>
-            </div>
-            <div id="orderHistoryItems" class="space-y-4"></div>
-        </div>
-    </div>
+    <audio id="notification-sound" src="https://cdn.freesound.org/previews/242/242857_4284968-lq.mp3" preload="auto"></audio>
 
-    <!-- Notification Container -->
-    <div id="notificationContainer" class="fixed top-4 right-4 z-50 space-y-2" style="max-width: 350px;"></div>
-
-    <!-- Main App Container -->
-    <div id="appContainer" class="panel-hidden">
-        <!-- Header -->
-        <header class="custom-bg shadow-md sticky top-0 z-40">
-            <div class="container mx-auto px-4 py-4">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-4">
-                        <img id="restaurantLogo" src="https://via.placeholder.com/50" alt="Logo" class="h-12 w-12 object-cover rounded-full">
-                        <div>
-                            <h1 id="headerName" class="text-2xl font-bold">Restaurant Name</h1>
-                            <p id="headerAddress" class="text-sm text-gray-600">Address</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        <!-- Language Selector -->
-                        <select id="languageSelector" onchange="changeLanguage()" class="px-3 py-2 border rounded-lg">
-                            <option value="en">English</option>
-                            <option value="es">Español</option>
-                            <option value="fr">Français</option>
-                        </select>
-                        
-                        <!-- Role-specific buttons -->
-                        <div id="guestButtons" class="hidden flex items-center space-x-4">
-                            <button onclick="openCart()" class="relative">
-                                <i class="fas fa-shopping-cart text-2xl"></i>
-                                <span id="cartCount" class="cart-badge">0</span>
-                            </button>
-                            <button onclick="openOrderHistory()" class="text-2xl" title="Order History">
-                                <i class="fas fa-history"></i>
-                            </button>
-                        </div>
-
-                        <div id="ownerButtons" class="hidden flex items-center space-x-4">
-                            <button onclick="openSettings()" class="text-2xl" title="Settings">
-                                <i class="fas fa-cog"></i>
-                            </button>
-                            <button onclick="openMenuManagement()" class="text-2xl" title="Menu Management">
-                                <i class="fas fa-utensils"></i>
-                            </button>
-                            <button onclick="openOrderHistory()" class="text-2xl" title="All Orders">
-                                <i class="fas fa-clipboard-list"></i>
-                            </button>
-                        </div>
-
-                        <div id="kitchenButtons" class="hidden flex items-center space-x-4">
-                            <button onclick="openOrderHistory()" class="text-2xl" title="Orders">
-                                <i class="fas fa-clipboard-list"></i>
-                            </button>
-                        </div>
-                        
-                        <button onclick="logout()" class="text-2xl" title="Logout">
-                            <i class="fas fa-sign-out-alt"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <!-- Guest Panel -->
-        <div id="guestPanel" class="panel-hidden">
-            <main class="container mx-auto px-4 py-8">
-                <!-- Category Filter -->
-                <div class="mb-8">
-                    <div class="flex flex-wrap gap-3">
-                        <button onclick="filterCategory('all')" class="category-btn btn-primary px-6 py-2 rounded-full font-semibold">
-                            All
-                        </button>
-                        <button onclick="filterCategory('appetizers')" class="category-btn bg-gray-200 px-6 py-2 rounded-full font-semibold hover:bg-gray-300">
-                            Appetizers
-                        </button>
-                        <button onclick="filterCategory('mains')" class="category-btn bg-gray-200 px-6 py-2 rounded-full font-semibold hover:bg-gray-300">
-                            Main Courses
-                        </button>
-                        <button onclick="filterCategory('desserts')" class="category-btn bg-gray-200 px-6 py-2 rounded-full font-semibold hover:bg-gray-300">
-                            Desserts
-                        </button>
-                        <button onclick="filterCategory('beverages')" class="category-btn bg-gray-200 px-6 py-2 rounded-full font-semibold hover:bg-gray-300">
-                            Beverages
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Search Bar -->
-                <div class="mb-8">
-                    <div class="relative">
-                        <input type="text" id="searchInput" onkeyup="searchMenu()" placeholder="Search menu..." class="w-full px-4 py-3 pl-12 border rounded-lg">
-                        <i class="fas fa-search absolute left-4 top-4 text-gray-400"></i>
-                    </div>
-                </div>
-
-                <!-- Menu Items -->
-                <div id="menuContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                </div>
-            </main>
-        </div>
-
-        <!-- Kitchen Panel -->
-        <div id="kitchenDashboard" class="panel-hidden">
-            <main class="container mx-auto px-4 py-8">
-                <h2 class="text-3xl font-bold mb-6">Kitchen Dashboard</h2>
-                
-                <div class="mb-6 flex gap-4">
-                    <input type="text" id="kitchenNotificationInput" placeholder="Send notification to guests..." class="flex-1 px-4 py-3 border rounded-lg">
-                    <button onclick="sendKitchenNotification()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold">
-                        <i class="fas fa-paper-plane mr-2"></i> Send Notification
-                    </button>
-                </div>
-
-                <div id="kitchenOrders" class="space-y-4"></div>
-            </main>
-        </div>
-
-        <!-- Owner Panel -->
-        <div id="ownerDashboard" class="panel-hidden">
-            <main class="container mx-auto px-4 py-8">
-                <h2 class="text-3xl font-bold mb-6">Owner Dashboard</h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div class="bg-blue-100 p-6 rounded-lg">
-                        <div class="text-3xl font-bold text-blue-600" id="totalOrders">0</div>
-                        <div class="text-gray-600">Total Orders</div>
-                    </div>
-                    <div class="bg-yellow-100 p-6 rounded-lg">
-                        <div class="text-3xl font-bold text-yellow-600" id="pendingOrders">0</div>
-                        <div class="text-gray-600">Pending Orders</div>
-                    </div>
-                    <div class="bg-green-100 p-6 rounded-lg">
-                        <div class="text-3xl font-bold text-green-600" id="completedOrders">0</div>
-                        <div class="text-gray-600">Completed Orders</div>
-                    </div>
-                    <div class="bg-purple-100 p-6 rounded-lg">
-                        <div class="text-3xl font-bold text-purple-600" id="totalRevenue">$0</div>
-                        <div class="text-gray-600">Total Revenue</div>
-                    </div>
-                </div>
-
-                <div class="mb-6">
-                    <input type="text" id="ownerNotificationInput" placeholder="Send notification to all users..." class="flex-1 px-4 py-3 border rounded-lg w-full mb-4">
-                    <button onclick="sendOwnerNotification()" class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold">
-                        <i class="fas fa-bullhorn mr-2"></i> Broadcast Notification
-                    </button>
-                </div>
-
-                <div id="ownerOrders" class="space-y-4"></div>
-            </main>
-        </div>
-
-        <!-- Footer -->
-        <footer class="custom-bg mt-16 py-8">
-            <div class="container mx-auto px-4 text-center">
-                <div id="footerSocial" class="flex justify-center space-x-6 mb-4"></div>
-                <p class="text-gray-600">&copy; 2024 <span id="footerName">Restaurant Name</span>. All rights reserved.</p>
-            </div>
-        </footer>
-    </div>
+    <!-- ADD FIREBASE SDKs HERE -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // Translations
-        const translations = {
-            en: {
-                all: 'All',
-                appetizers: 'Appetizers',
-                mains: 'Main Courses',
-                desserts: 'Desserts',
-                beverages: 'Beverages',
-                addToCart: 'Add to Cart',
-                cart: 'Cart',
-                total: 'Total',
-                placeOrder: 'Place Order',
-                orderHistory: 'Order History',
-                searchPlaceholder: 'Search menu...',
-                orderPlaced: 'Order placed successfully!',
-                pending: 'Pending',
-                preparing: 'Preparing',
-                ready: 'Ready',
-                delivered: 'Delivered'
-            },
-            es: {
-                all: 'Todos',
-                appetizers: 'Aperitivos',
-                mains: 'Platos Principales',
-                desserts: 'Postres',
-                beverages: 'Bebidas',
-                addToCart: 'Añadir al Carrito',
-                cart: 'Carrito',
-                total: 'Total',
-                placeOrder: 'Realizar Pedido',
-                orderHistory: 'Historial de Pedidos',
-                searchPlaceholder: 'Buscar en el menú...',
-                orderPlaced: '¡Pedido realizado con éxito!',
-                pending: 'Pendiente',
-                preparing: 'Preparando',
-                ready: 'Listo',
-                delivered: 'Entregado'
-            },
-            fr: {
-                all: 'Tous',
-                appetizers: 'Entrées',
-                mains: 'Plats Principaux',
-                desserts: 'Desserts',
-                beverages: 'Boissons',
-                addToCart: 'Ajouter au Panier',
-                cart: 'Panier',
-                total: 'Total',
-                placeOrder: 'Passer Commande',
-                orderHistory: 'Historique des Commandes',
-                searchPlaceholder: 'Rechercher dans le menu...',
-                orderPlaced: 'Commande passée avec succès!',
-                pending: 'En attente',
-                preparing: 'En préparation',
-                ready: 'Prêt',
-                delivered: 'Livré'
-            }
-        };
-
-        // State
-        let currentLanguage = 'en';
-        let currentRole = null;
-        let currentAuthRole = null;
-        let cart = [];
-        let orderHistory = [];
-        let currentCategory = 'all';
-        let editingMenuItemId = null;
-        let settings = {
-            restaurantName: 'Gourmet Restaurant',
-            address: '123 Main Street, City, Country',
-            logoUrl: 'https://via.placeholder.com/150',
-            social: {
-                facebook: '',
-                instagram: '',
-                twitter: ''
-            },
-            colors: {
-                primary: '#3b82f6',
-                secondary: '#1e40af',
-                bgPrimary: '#ffffff',
-                bgSecondary: '#f3f4f6'
-            }
-        };
-
-        // Load credentials from localStorage or use defaults
-        let credentials = {
-            owner: { username: 'admin', password: 'admin123' },
-            kitchen: { username: 'kitchen', password: 'kitchen123' }
+        // --- PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE ---
+        const firebaseConfig = {
+          apiKey: "YOUR_API_KEY",
+          authDomain: "YOUR_AUTH_DOMAIN",
+          // Make sure to include your DATABASE URL here
+          databaseURL: "https://restaurant-management-cef63-default-rtdb.firebaseio.com",
+          projectId: "YOUR_PROJECT_ID",
+          storageBucket: "YOUR_STORAGE_BUCKET",
+          messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+          appId: "YOUR_APP_ID"
         };
         
-        function loadCredentials() {
-            const saved = localStorage.getItem('credentials');
-            if (saved) {
-                credentials = JSON.parse(saved);
+        // --- INITIALIZE FIREBASE AND DATABASE ---
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // --- DATA & STATE ---
+        let menuData = {};
+        let userState = { role: 'guest', isLoggedIn: false };
+        let credentials = {};
+        let currentOrder = [];
+        let guestOrderHistory = [];
+        let allOrders = [];
+
+        // --- CORE FUNCTIONS ---
+        function showView(viewId) {
+            document.querySelectorAll('main > section').forEach(section => section.classList.add('hidden'));
+            if(viewId) {
+                const view = document.getElementById(viewId + '-view');
+                if (view) {
+                    view.classList.remove('hidden');
+                    if (viewId === 'edit-menu') renderMenuEditor();
+                    if (viewId === 'all-orders') renderAllOrders();
+                    if (viewId === 'owner-dashboard') loadOwnerDashboard();
+                }
+            }
+            document.getElementById('kitchen-view').classList.add('hidden');
+            if (viewId === 'kitchen') {
+                document.getElementById('kitchen-view').classList.remove('hidden');
+                renderKitchenOrders();
             }
         }
         
-        function saveCredentials() {
-            localStorage.setItem('credentials', JSON.stringify(credentials));
-        }
-        
-        // New order counter for kitchen alerts
-        let lastOrderCount = 0;
+        function updateNav() {
+            const nav = document.getElementById('main-nav');
+            const cart = document.getElementById('cart-container');
+            let navLinks = '';
 
-        // Menu Items
-        let menuItems = [
-            { 
-                id: 1, 
-                category: 'appetizers', 
-                price: 8.99, 
-                image: 'https://images.unsplash.com/photo-1546793665-c74683f339c1?w=400',
-                tags: 'Vegetarian',
-                translations: {
-                    en: { name: 'Caesar Salad', description: 'Fresh romaine lettuce with parmesan' },
-                    es: { name: 'Ensalada César', description: 'Lechuga romana fresca con parmesano' },
-                    fr: { name: 'Salade César', description: 'Laitue romaine fraîche au parmesan' }
-                }
-            },
-            { 
-                id: 2, 
-                category: 'appetizers', 
-                price: 6.99, 
-                image: 'https://images.unsplash.com/photo-1572695157366-5e585ab2b69f?w=400',
-                tags: 'Vegan, Vegetarian',
-                translations: {
-                    en: { name: 'Bruschetta', description: 'Toasted bread with tomatoes and basil' },
-                    es: { name: 'Bruschetta', description: 'Pan tostado con tomates y albahaca' },
-                    fr: { name: 'Bruschetta', description: 'Pain grillé aux tomates et basilic' }
-                }
-            },
-            { 
-                id: 3, 
-                category: 'mains', 
-                price: 24.99, 
-                image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400',
-                tags: 'Gluten-Free',
-                translations: {
-                    en: { name: 'Grilled Salmon', description: 'Fresh salmon with herbs and lemon' },
-                    es: { name: 'Salmón a la Parrilla', description: 'Salmón fresco con hierbas y limón' },
-                    fr: { name: 'Saumon Grillé', description: 'Saumon frais aux herbes et citron' }
-                }
-            },
-            { 
-                id: 4, 
-                category: 'mains', 
-                price: 32.99, 
-                image: 'https://images.unsplash.com/photo-1558030006-450675393462?w=400',
-                tags: 'Gluten-Free',
-                translations: {
-                    en: { name: 'Ribeye Steak', description: 'Premium cut with seasoning' },
-                    es: { name: 'Filete Ribeye', description: 'Corte premium con condimentos' },
-                    fr: { name: 'Entrecôte', description: 'Coupe premium avec assaisonnement' }
-                }
-            },
-            { 
-                id: 5, 
-                category: 'desserts', 
-                price: 7.99, 
-                image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400',
-                tags: 'Vegetarian',
-                translations: {
-                    en: { name: 'Chocolate Cake', description: 'Rich chocolate layered cake' },
-                    es: { name: 'Pastel de Chocolate', description: 'Rico pastel de chocolate en capas' },
-                    fr: { name: 'Gâteau au Chocolat', description: 'Gâteau au chocolat riche en couches' }
-                }
-            },
-            { 
-                id: 6, 
-                category: 'desserts', 
-                price: 8.99, 
-                image: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400',
-                tags: 'Vegetarian',
-                translations: {
-                    en: { name: 'Tiramisu', description: 'Classic Italian dessert' },
-                    es: { name: 'Tiramisú', description: 'Postre italiano clásico' },
-                    fr: { name: 'Tiramisu', description: 'Dessert italien classique' }
-                }
-            },
-            { 
-                id: 7, 
-                category: 'beverages', 
-                price: 4.99, 
-                image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400',
-                tags: 'Vegan, Gluten-Free',
-                translations: {
-                    en: { name: 'Fresh Juice', description: 'Freshly squeezed orange juice' },
-                    es: { name: 'Jugo Fresco', description: 'Jugo de naranja recién exprimido' },
-                    fr: { name: 'Jus Frais', description: "Jus d'orange fraîchement pressé" }
-                }
-            },
-            { 
-                id: 8, 
-                category: 'beverages', 
-                price: 3.99, 
-                image: 'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=400',
-                tags: 'Vegan, Gluten-Free',
-                translations: {
-                    en: { name: 'Espresso', description: 'Strong Italian coffee' },
-                    es: { name: 'Espresso', description: 'Café italiano fuerte' },
-                    fr: { name: 'Espresso', description: 'Café italien fort' }
-                }
+            if (userState.role === 'owner') {
+                navLinks = \`
+                    <button onclick="showView('owner-dashboard')" class="px-3 py-2 rounded hover:bg-gray-600">Dashboard</button>
+                    <button onclick="showView('all-orders')" class="px-3 py-2 rounded hover:bg-gray-600">All Orders</button>
+                    <button onclick="showView('edit-menu')" class="px-3 py-2 rounded hover:bg-gray-600">Edit Menu</button>
+                    <button onclick="showView('settings')" class="px-3 py-2 rounded hover:bg-gray-600">Settings</button>
+                    <button onclick="showView('kitchen')" class="px-3 py-2 rounded hover:bg-gray-600">Kitchen View</button>
+                    <button onclick="logout()" class="px-3 py-2 rounded hover:bg-gray-600">Switch to Guest View</button>
+                \`;
+                cart.classList.add('hidden');
+                document.getElementById('login-button').classList.add('hidden');
+                document.getElementById('logout-button').classList.remove('hidden');
+            } else { // Guest
+                navLinks = \`
+                    <button onclick="showView('menu')" class="px-3 py-2 rounded hover:bg-gray-600">Menu</button>
+                    <button onclick="showView('order-history')" class="px-3 py-2 rounded hover:bg-gray-600">My Orders</button>
+                    <button onclick="showView('photo-upload')" class="px-3 py-2 rounded hover:bg-gray-600">Upload Photo</button>
+                \`;
+                cart.classList.remove('hidden');
+                document.getElementById('login-button').classList.remove('hidden');
+                document.getElementById('logout-button').classList.add('hidden');
             }
-        ];
-
-        // Change Credentials (Owner/Kitchen)
-        function changeCredentials() {
-            const newUsername = document.getElementById('newUsername').value;
-            const newPassword = document.getElementById('newPassword').value;
-            
-            if (!newUsername || !newPassword) {
-                showNotification('Please enter both username and password', 'error');
-                return;
-            }
-            
-            if (currentRole === 'owner') {
-                credentials.owner.username = newUsername;
-                credentials.owner.password = newPassword;
-            } else if (currentRole === 'kitchen') {
-                credentials.kitchen.username = newUsername;
-                credentials.kitchen.password = newPassword;
-            }
-            
-            saveCredentials();
-            document.getElementById('newUsername').value = '';
-            document.getElementById('newPassword').value = '';
-            showNotification('Credentials updated successfully!', 'success');
-        }
-        
-        // Check for new orders and alert kitchen
-        function checkForNewOrders() {
-            if (currentRole === 'kitchen') {
-                const currentOrderCount = orderHistory.filter(o => o.status !== 'delivered').length;
-                if (currentOrderCount > lastOrderCount) {
-                    playNotificationSound();
-                    showNotification('🔔 NEW ORDER RECEIVED!', 'success', 5000);
-                    renderKitchenOrders();
-                }
-                lastOrderCount = currentOrderCount;
-            }
-        }
-        
-        // Play notification sound
-        function playNotificationSound() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.frequency.value = 800;
-            oscillator.type = 'sine';
-            
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.5);
+            nav.innerHTML = \`<div class="container mx-auto flex justify-between items-center text-white">\${navLinks}</div>\`;
         }
 
-        // Initialize
-        function init() {
-            loadCredentials();
-            loadSettings();
-            loadMenuItems();
-            loadOrderHistory();
-            applySettings();
-            lastOrderCount = orderHistory.filter(o => o.status !== 'delivered').length;
-            
-            // Check for new orders every 3 seconds for kitchen
-            setInterval(checkForNewOrders, 3000);
-        }
+        // --- LOGIN & CREDENTIALS ---
+        function showLoginModal() { document.getElementById('login-modal').classList.remove('hidden'); }
+        function hideLoginModal() { document.getElementById('login-modal').classList.add('hidden'); }
 
-        // Role Selection
-        function selectRole(role) {
-            if (role === 'guest') {
-                currentRole = 'guest';
-                document.getElementById('loginModal').classList.remove('active');
-                showGuestPanel();
+        function login() {
+            const user = document.getElementById('username-input').value;
+            const pass = document.getElementById('password-input').value;
+            if (user === credentials.username && pass === credentials.password) {
+                userState.role = 'owner';
+                userState.isLoggedIn = true;
+                hideLoginModal();
+                updateNav();
+                showView('owner-dashboard');
+                showNotification('Owner login successful!', 'success');
             } else {
-                currentAuthRole = role;
-                document.getElementById('loginModal').classList.remove('active');
-                document.getElementById('authModal').classList.add('active');
-                document.getElementById('authTitle').textContent = role === 'owner' ? 'Owner Login' : 'Kitchen Staff Login';
+                showNotification('Invalid credentials.', 'error');
             }
-        }
-
-        // Authentication
-        function authenticate() {
-            const username = document.getElementById('authUsername').value;
-            const password = document.getElementById('authPassword').value;
-            
-            if (credentials[currentAuthRole].username === username && credentials[currentAuthRole].password === password) {
-                currentRole = currentAuthRole;
-                closeAuth();
-                
-                if (currentRole === 'owner') {
-                    showOwnerPanel();
-                } else if (currentRole === 'kitchen') {
-                    showKitchenPanel();
-                }
-                
-                showNotification('Login successful!', 'success');
-            } else {
-                showNotification('Invalid credentials!', 'error');
-            }
-        }
-
-        function closeAuth() {
-            document.getElementById('authModal').classList.remove('active');
-            document.getElementById('authUsername').value = '';
-            document.getElementById('authPassword').value = '';
-        }
-
-        // Panel Management
-        function showGuestPanel() {
-            document.getElementById('appContainer').classList.remove('panel-hidden');
-            document.getElementById('guestPanel').classList.remove('panel-hidden');
-            document.getElementById('guestButtons').classList.remove('hidden');
-            document.getElementById('guestButtons').classList.add('flex');
-            document.getElementById('kitchenDashboard').classList.add('panel-hidden');
-            document.getElementById('ownerDashboard').classList.add('panel-hidden');
-            renderMenu();
-        }
-
-        function showKitchenPanel() {
-            document.getElementById('appContainer').classList.remove('panel-hidden');
-            document.getElementById('kitchenDashboard').classList.remove('panel-hidden');
-            document.getElementById('kitchenButtons').classList.remove('hidden');
-            document.getElementById('kitchenButtons').classList.add('flex');
-            document.getElementById('guestPanel').classList.add('panel-hidden');
-            document.getElementById('ownerDashboard').classList.add('panel-hidden');
-            renderKitchenOrders();
-        }
-
-        function showOwnerPanel() {
-            document.getElementById('appContainer').classList.remove('panel-hidden');
-            document.getElementById('ownerDashboard').classList.remove('panel-hidden');
-            document.getElementById('ownerButtons').classList.remove('hidden');
-            document.getElementById('ownerButtons').classList.add('flex');
-            document.getElementById('guestPanel').classList.add('panel-hidden');
-            document.getElementById('kitchenDashboard').classList.add('panel-hidden');
-            updateOwnerStats();
-            renderOwnerOrders();
         }
 
         function logout() {
-            currentRole = null;
-            currentAuthRole = null;
-            cart = [];
-            document.getElementById('appContainer').classList.add('panel-hidden');
-            document.getElementById('guestPanel').classList.add('panel-hidden');
-            document.getElementById('kitchenDashboard').classList.add('panel-hidden');
-            document.getElementById('ownerDashboard').classList.add('panel-hidden');
-            document.getElementById('guestButtons').classList.add('hidden');
-            document.getElementById('kitchenButtons').classList.add('hidden');
-            document.getElementById('ownerButtons').classList.add('hidden');
-            document.getElementById('loginModal').classList.add('active');
-            updateCartCount();
+            userState.role = 'guest';
+            userState.isLoggedIn = false;
+            updateNav();
+            showView('menu');
+            showNotification('Logged out.', 'info');
         }
 
-        // Settings Management
-        function loadSettings() {
-            const saved = localStorage.getItem('restaurantSettings');
-            if (saved) {
-                settings = JSON.parse(saved);
-            }
-        }
+        function updateCredentials() {
+            const newUsername = document.getElementById('new-username-input').value.trim();
+            const newPassword = document.getElementById('new-password-input').value.trim();
 
-        function applySettings() {
-            document.getElementById('headerName').textContent = settings.restaurantName;
-            document.getElementById('headerAddress').textContent = settings.address;
-            document.getElementById('footerName').textContent = settings.restaurantName;
-            document.getElementById('restaurantLogo').src = settings.logoUrl;
-            
-            document.documentElement.style.setProperty('--color-primary', settings.colors.primary);
-            document.documentElement.style.setProperty('--color-secondary', settings.colors.secondary);
-            document.documentElement.style.setProperty('--bg-primary', settings.colors.bgPrimary);
-            document.documentElement.style.setProperty('--bg-secondary', settings.colors.bgSecondary);
-            
-            updateSocialMedia();
-        }
-
-        function updateSocialMedia() {
-            const socialContainer = document.getElementById('footerSocial');
-            let socialHTML = '';
-            
-            if (settings.social.facebook) {
-                socialHTML += `<a href="${settings.social.facebook}" target="_blank" class="text-2xl hover:opacity-70"><i class="fab fa-facebook"></i></a>`;
-            }
-            if (settings.social.instagram) {
-                socialHTML += `<a href="${settings.social.instagram}" target="_blank" class="text-2xl hover:opacity-70"><i class="fab fa-instagram"></i></a>`;
-            }
-            if (settings.social.twitter) {
-                socialHTML += `<a href="${settings.social.twitter}" target="_blank" class="text-2xl hover:opacity-70"><i class="fab fa-twitter"></i></a>`;
-            }
-            
-            socialContainer.innerHTML = socialHTML;
-        }
-
-        function openSettings() {
-            if (currentRole !== 'owner') {
-                showNotification('Only owner can access settings', 'error');
+            if (!newUsername) {
+                showNotification('Username cannot be empty.', 'error');
                 return;
             }
-            
-            document.getElementById('settingsModal').classList.add('active');
-            document.getElementById('restaurantName').value = settings.restaurantName;
-            document.getElementById('restaurantAddress').value = settings.address;
-            document.getElementById('logoUrl').value = settings.logoUrl;
-            document.getElementById('facebookUrl').value = settings.social.facebook || '';
-            document.getElementById('instagramUrl').value = settings.social.instagram || '';
-            document.getElementById('twitterUrl').value = settings.social.twitter || '';
-            document.getElementById('primaryColor').value = settings.colors.primary;
-            document.getElementById('secondaryColor').value = settings.colors.secondary;
-            document.getElementById('bgColor').value = settings.colors.bgPrimary;
-            document.getElementById('bgSecondaryColor').value = settings.colors.bgSecondary;
-        }
 
-        function closeSettings() {
-            document.getElementById('settingsModal').classList.remove('active');
-        }
-
-        function saveSettings() {
-            settings.restaurantName = document.getElementById('restaurantName').value;
-            settings.address = document.getElementById('restaurantAddress').value;
-            settings.logoUrl = document.getElementById('logoUrl').value;
-            settings.social.facebook = document.getElementById('facebookUrl').value;
-            settings.social.instagram = document.getElementById('instagramUrl').value;
-            settings.social.twitter = document.getElementById('twitterUrl').value;
-            settings.colors.primary = document.getElementById('primaryColor').value;
-            settings.colors.secondary = document.getElementById('secondaryColor').value;
-            settings.colors.bgPrimary = document.getElementById('bgColor').value;
-            settings.colors.bgSecondary = document.getElementById('bgSecondaryColor').value;
-            
-            localStorage.setItem('restaurantSettings', JSON.stringify(settings));
-            applySettings();
-            closeSettings();
-            showNotification('Settings saved successfully!', 'success');
-        }
-
-        // Menu Management
-        function loadMenuItems() {
-            const saved = localStorage.getItem('menuItems');
-            if (saved) {
-                menuItems = JSON.parse(saved);
-            }
-        }
-
-        function saveMenuItems() {
-            localStorage.setItem('menuItems', JSON.stringify(menuItems));
-        }
-
-        function openMenuManagement() {
-            if (currentRole !== 'owner') {
-                showNotification('Only owner can manage menu', 'error');
-                return;
-            }
-            
-            document.getElementById('menuManagementModal').classList.add('active');
-            renderMenuItemsList();
-        }
-
-        function closeMenuManagement() {
-            document.getElementById('menuManagementModal').classList.remove('active');
-        }
-
-        function renderMenuItemsList() {
-            const container = document.getElementById('menuItemsList');
-            
-            container.innerHTML = menuItems.map(item => `
-                <div class="border rounded-lg p-4 flex items-center gap-4">
-                    <img src="${item.image}" class="w-24 h-24 object-cover rounded-lg">
-                    <div class="flex-1">
-                        <h3 class="font-bold text-lg">${item.translations.en.name}</h3>
-                        <p class="text-gray-600">${item.translations.en.description}</p>
-                        ${item.tags ? `<p class="text-sm text-blue-600 mt-1"><i class="fas fa-tags"></i> ${item.tags}</p>` : ''}
-                        <p class="text-lg font-semibold mt-2" style="color: var(--color-primary)">$${item.price.toFixed(2)}</p>
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="editMenuItem(${item.id})" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button onclick="deleteMenuItem(${item.id})" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function showAddMenuItem() {
-            editingMenuItemId = null;
-            document.getElementById('menuItemModalTitle').textContent = 'Add Menu Item';
-            document.getElementById('menuItemModal').classList.add('active');
-            clearMenuItemForm();
-        }
-
-        function editMenuItem(id) {
-            editingMenuItemId = id;
-            const item = menuItems.find(i => i.id === id);
-            
-            document.getElementById('menuItemModalTitle').textContent = 'Edit Menu Item';
-            document.getElementById('menuItemCategory').value = item.category;
-            document.getElementById('menuItemPrice').value = item.price;
-            document.getElementById('menuItemNameEn').value = item.translations.en.name;
-            document.getElementById('menuItemDescEn').value = item.translations.en.description;
-            document.getElementById('menuItemNameEs').value = item.translations.es.name;
-            document.getElementById('menuItemDescEs').value = item.translations.es.description;
-            document.getElementById('menuItemNameFr').value = item.translations.fr.name;
-            document.getElementById('menuItemDescFr').value = item.translations.fr.description;
-            document.getElementById('menuItemTags').value = item.tags || '';
-            
-            if (item.image) {
-                document.getElementById('menuItemImagePreview').src = item.image;
-                document.getElementById('menuItemImagePreview').classList.remove('hidden');
-            }
-            
-            document.getElementById('menuItemModal').classList.add('active');
-        }
-
-        function deleteMenuItem(id) {
-            if (confirm('Are you sure you want to delete this menu item?')) {
-                menuItems = menuItems.filter(item => item.id !== id);
-                saveMenuItems();
-                renderMenuItemsList();
-                showNotification('Menu item deleted', 'success');
-            }
-        }
-
-        function clearMenuItemForm() {
-            document.getElementById('menuItemCategory').value = 'appetizers';
-            document.getElementById('menuItemPrice').value = '';
-            document.getElementById('menuItemNameEn').value = '';
-            document.getElementById('menuItemDescEn').value = '';
-            document.getElementById('menuItemNameEs').value = '';
-            document.getElementById('menuItemDescEs').value = '';
-            document.getElementById('menuItemNameFr').value = '';
-            document.getElementById('menuItemDescFr').value = '';
-            document.getElementById('menuItemTags').value = '';
-            document.getElementById('menuItemImagePreview').classList.add('hidden');
-        }
-
-        function closeMenuItemModal() {
-            document.getElementById('menuItemModal').classList.remove('active');
-            clearMenuItemForm();
-        }
-
-        function saveMenuItem() {
-            const newItem = {
-                id: editingMenuItemId || Date.now(),
-                category: document.getElementById('menuItemCategory').value,
-                price: parseFloat(document.getElementById('menuItemPrice').value),
-                image: document.getElementById('menuItemImagePreview').src || 'https://via.placeholder.com/400',
-                tags: document.getElementById('menuItemTags').value,
-                translations: {
-                    en: {
-                        name: document.getElementById('menuItemNameEn').value,
-                        description: document.getElementById('menuItemDescEn').value
-                    },
-                    es: {
-                        name: document.getElementById('menuItemNameEs').value,
-                        description: document.getElementById('menuItemDescEs').value
-                    },
-                    fr: {
-                        name: document.getElementById('menuItemNameFr').value,
-                        description: document.getElementById('menuItemDescFr').value
-                    }
-                }
+            const newCreds = {
+                username: newUsername,
+                password: newPassword ? newPassword : credentials.password
             };
             
-            if (editingMenuItemId) {
-                const index = menuItems.findIndex(i => i.id === editingMenuItemId);
-                menuItems[index] = newItem;
-            } else {
-                menuItems.push(newItem);
-            }
-            
-            saveMenuItems();
-            closeMenuItemModal();
-            renderMenuItemsList();
-            if (currentRole === 'guest') {
-                renderMenu();
-            }
-            showNotification('Menu item saved!', 'success');
+            db.ref('settings/credentials').set(newCreds)
+                .then(() => {
+                    document.getElementById('new-password-input').value = '';
+                    showNotification('Credentials updated successfully!', 'success');
+                })
+                .catch(err => showNotification('Error updating credentials.', 'error'));
         }
 
-        // Menu Rendering
+        // --- MENU & ORDERING ---
         function renderMenu() {
-            const container = document.getElementById('menuContainer');
-            const lang = translations[currentLanguage];
-            
-            const filtered = currentCategory === 'all' 
-                ? menuItems 
-                : menuItems.filter(item => item.category === currentCategory);
-            
-            container.innerHTML = filtered.map(item => {
-                const itemData = item.translations[currentLanguage];
-                return `
-                    <div class="menu-item-card bg-white rounded-lg shadow-md overflow-hidden fade-in" data-category="${item.category}">
-                        <img src="${item.image}" alt="${itemData.name}" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3 class="text-xl font-bold mb-2">${itemData.name}</h3>
-                            <p class="text-gray-600 mb-3">${itemData.description}</p>
-                            ${item.tags ? `<p class="text-xs text-blue-600 mb-2"><i class="fas fa-tags"></i> ${item.tags}</p>` : ''}
-                            <div class="flex justify-between items-center">
-                                <span class="text-2xl font-bold" style="color: var(--color-primary)">$${item.price.toFixed(2)}</span>
-                                <button onclick="addToCart(${item.id})" class="btn-primary px-4 py-2 rounded-lg font-semibold">
-                                    ${lang.addToCart}
-                                </button>
+            const lang = document.getElementById('language-selector').value;
+            const searchTerm = document.getElementById('menu-search').value.toLowerCase();
+            const menu = menuData ? menuData[lang] : null;
+            const container = document.getElementById('menu-container');
+            container.innerHTML = '';
+            if (!menu || !menu.categories) {
+                 container.innerHTML = '<p>Menu is loading or not available...</p>';
+                 return;
+            }
+
+            menu.categories.forEach(category => {
+                const filteredItems = category.items.filter(item => 
+                    item.name.toLowerCase().includes(searchTerm) || 
+                    item.description.toLowerCase().includes(searchTerm) ||
+                    (item.tags && Array.isArray(item.tags) && item.tags.some(t => t.toLowerCase().includes(searchTerm)))
+                );
+
+                if (filteredItems.length > 0) {
+                    let categoryHtml = \`<div class="col-span-1 md:col-span-2 lg:col-span-3"><h3 class="text-2xl font-semibold mb-2">\${category.name}</h3></div>\`;
+                    container.innerHTML += categoryHtml;
+                    filteredItems.forEach(item => {
+                        const tagsHtml = item.tags && item.tags.length > 0 
+                            ? \`<div class="flex flex-wrap gap-2 mt-2">\${item.tags.map(tag => \`<span class="bg-gray-200 text-gray-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">\${tag}</span>\`).join('')}</div>\`
+                            : '';
+                        const itemHtml = \`
+                            <div class="menu-item bg-white p-4 rounded-lg shadow-md cursor-pointer" onclick="addToOrder('\${item.id}')">
+                                <h4 class="text-xl font-bold">\${item.name}</h4>
+                                <p class="text-gray-600">\${item.description}</p>
+                                <p class="text-lg font-semibold mt-2">$ \${item.price.toFixed(2)}</p>
+                                \${tagsHtml}
                             </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function filterCategory(category) {
-            currentCategory = category;
-            
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.classList.remove('btn-primary');
-                btn.classList.add('bg-gray-200', 'hover:bg-gray-300');
-            });
-            event.target.classList.remove('bg-gray-200', 'hover:bg-gray-300');
-            event.target.classList.add('btn-primary');
-            
-            renderMenu();
-        }
-
-        function searchMenu() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            
-            document.querySelectorAll('.menu-item-card').forEach(card => {
-                const text = card.textContent.toLowerCase();
-                card.style.display = text.includes(searchTerm) ? 'block' : 'none';
+                        \`;
+                        container.innerHTML += itemHtml;
+                    });
+                }
             });
         }
-
-        // Cart Management
-        function addToCart(itemId) {
-            const item = menuItems.find(i => i.id === itemId);
-            const itemData = item.translations[currentLanguage];
-            
-            const cartItem = cart.find(i => i.id === itemId);
-            if (cartItem) {
-                cartItem.quantity++;
-            } else {
-                cart.push({
-                    id: itemId,
-                    name: itemData.name,
-                    price: item.price,
-                    quantity: 1
-                });
-            }
-            
-            updateCartCount();
-            showNotification(`${itemData.name} added to cart!`, 'success');
-        }
-
-        function updateCartCount() {
-            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-            document.getElementById('cartCount').textContent = count;
-        }
-
-        function openCart() {
-            document.getElementById('cartModal').classList.add('active');
-            renderCart();
-        }
-
-        function closeCart() {
-            document.getElementById('cartModal').classList.remove('active');
-        }
-
-        function renderCart() {
-            const container = document.getElementById('cartItems');
-            
-            if (cart.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 text-center py-8">Your cart is empty</p>';
-                document.getElementById('cartTotal').textContent = '$0.00';
-                return;
-            }
-            
-            container.innerHTML = cart.map(item => `
-                <div class="flex justify-between items-center border-b pb-3">
-                    <div class="flex-1">
-                        <h4 class="font-semibold">${item.name}</h4>
-                        <p class="text-gray-600">$${item.price.toFixed(2)} x ${item.quantity}</p>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                        <button onclick="updateQuantity(${item.id}, -1)" class="bg-gray-200 px-3 py-1 rounded">-</button>
-                        <span class="font-semibold">${item.quantity}</span>
-                        <button onclick="updateQuantity(${item.id}, 1)" class="bg-gray-200 px-3 py-1 rounded">+</button>
-                        <button onclick="removeFromCart(${item.id})" class="text-red-500 ml-3">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-            
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            document.getElementById('cartTotal').textContent = `$${total.toFixed(2)}`;
-        }
-
-        function updateQuantity(itemId, change) {
-            const item = cart.find(i => i.id === itemId);
-            if (item) {
-                item.quantity += change;
-                if (item.quantity <= 0) {
-                    removeFromCart(itemId);
-                } else {
-                    renderCart();
-                    updateCartCount();
+        
+        function findMenuItem(itemId) {
+            if (!menuData) return null;
+            for (const lang in menuData) {
+                if (menuData[lang] && menuData[lang].categories) {
+                    for (const category of menuData[lang].categories) {
+                        const item = category.items.find(i => i.id === itemId);
+                        if (item) return item;
+                    }
                 }
             }
+            return null;
         }
 
-        function removeFromCart(itemId) {
-            cart = cart.filter(i => i.id !== itemId);
+        function renderCart() { 
+            const cartItemsContainer = document.getElementById('cart-items');
+            const cartTotalEl = document.getElementById('cart-total');
+            if (currentOrder.length === 0) {
+                cartItemsContainer.innerHTML = 'Your cart is empty.';
+                cartTotalEl.innerText = 'Total: $0.00';
+                return;
+            }
+
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+            currentOrder.forEach((item, index) => {
+                cartItemsContainer.innerHTML += \`
+                    <div class="flex justify-between items-center text-sm py-1">
+                        <div>\${item.name}</div>
+                        <div class="flex items-center">
+                            <span class="mr-4">$\${item.price.toFixed(2)}</span>
+                            <button onclick="removeFromOrder(\${index})" class="text-red-500 font-bold hover:text-red-700">X</button>
+                        </div>
+                    </div>
+                \`;
+                total += item.price;
+            });
+            cartTotalEl.innerText = \`Total: $\${total.toFixed(2)}\`;
+        }
+
+        function addToOrder(itemId) {
+            const item = findMenuItem(itemId);
+            if(item) {
+                currentOrder.push({ id: item.id, name: item.name, price: item.price });
+                renderCart();
+                showNotification(\`Added \${item.name} to your order.\`);
+            }
+        }
+
+        function removeFromOrder(index) {
+            const itemName = currentOrder[index].name;
+            currentOrder.splice(index, 1);
             renderCart();
-            updateCartCount();
+            showNotification(\`Removed \${itemName} from your order.\`, 'error');
         }
 
-        function proceedToOrder() {
-            if (cart.length === 0) {
+        function placeOrder() {
+            if (currentOrder.length === 0) {
                 showNotification('Your cart is empty!', 'error');
                 return;
             }
             
-            closeCart();
-            document.getElementById('tableModal').classList.add('active');
-        }
-
-        function confirmTable() {
-            const tableNumber = document.getElementById('tableNumber').value;
-            const guestName = document.getElementById('guestName').value;
-            const preferences = document.getElementById('guestPreferences').value;
-            
+            const tableNumber = prompt("Please enter your Table or Room Number:");
             if (!tableNumber) {
-                showNotification('Please enter table/room number', 'error');
+                showNotification('Order cancelled. Table/Room number is required.', 'error');
                 return;
             }
-            
-            const order = {
-                id: Date.now(),
-                items: [...cart],
-                total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-                date: new Date().toLocaleString(),
-                status: 'pending',
-                tableNumber: tableNumber,
-                guestName: guestName || 'Guest',
-                preferences: preferences || '',
-                language: currentLanguage
+
+            const preferences = document.getElementById('order-preferences').value;
+            const total = currentOrder.reduce((sum, item) => sum + item.price, 0);
+            const newOrder = {
+                date: new Date().toISOString(),
+                items: [...currentOrder],
+                total: total,
+                table: tableNumber,
+                status: 'new', // new, preparing, ready, delivered
+                preferences: preferences
             };
-            
-            orderHistory.unshift(order);
-            localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
-            
-            cart = [];
-            updateCartCount();
-            document.getElementById('tableModal').classList.remove('active');
-            document.getElementById('tableNumber').value = '';
-            document.getElementById('guestName').value = '';
-            document.getElementById('guestPreferences').value = '';
-            
-            const lang = translations[currentLanguage];
-            showNotification(lang.orderPlaced, 'success');
-        }
 
-        // Order History
-        function loadOrderHistory() {
-            const saved = localStorage.getItem('orderHistory');
-            if (saved) {
-                orderHistory = JSON.parse(saved);
-            }
-        }
-
-        function openOrderHistory() {
-            document.getElementById('orderHistoryModal').classList.add('active');
-            renderOrderHistory();
-        }
-
-        function closeOrderHistory() {
-            document.getElementById('orderHistoryModal').classList.remove('active');
-        }
-
-        function renderOrderHistory() {
-            const container = document.getElementById('orderHistoryItems');
-            
-            let orders = orderHistory;
-            if (currentRole === 'guest') {
-                orders = orderHistory.slice(0, 10);
-            }
-            
-            if (orders.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 text-center py-8">No orders yet</p>';
-                return;
-            }
-            
-            container.innerHTML = orders.map(order => {
-                const statusClass = order.status === 'delivered' ? 'status-delivered' :
-                                   order.status === 'ready' ? 'status-ready' :
-                                   order.status === 'preparing' ? 'status-preparing' : 'status-pending';
-                
-                return `
-                    <div class="border rounded-lg p-4 custom-bg">
-                        <div class="flex justify-between items-start mb-3">
-                            <div>
-                                <h3 class="font-bold text-lg">Order #${order.id}</h3>
-                                <p class="text-sm text-gray-600">${order.date}</p>
-                                <p class="text-sm font-semibold">${order.tableNumber} - ${order.guestName}</p>
-                                ${order.preferences ? `<div class="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded"><p class="text-xs font-semibold text-yellow-800"><i class="fas fa-exclamation-triangle"></i> Allergies/Preferences:</p><p class="text-xs text-yellow-900">${order.preferences}</p></div>` : ''}
-                            </div>
-                            <div class="flex gap-2 items-center">
-                                <span class="status-badge ${statusClass}">
-                                    ${translations[order.language || 'en'][order.status]}
-                                </span>
-                                ${currentRole === 'owner' || currentRole === 'kitchen' ? `
-                                    <select onchange="updateOrderStatus(${order.id}, this.value)" class="px-2 py-1 border rounded text-sm">
-                                        <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
-                                        <option value="preparing" ${order.status === 'preparing' ? 'selected' : ''}>Preparing</option>
-                                        <option value="ready" ${order.status === 'ready' ? 'selected' : ''}>Ready</option>
-                                        <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
-                                    </select>
-                                ` : ''}
-                            </div>
-                        </div>
-                        <div class="space-y-2 mb-3">
-                            ${order.items.map(item => `
-                                <div class="flex justify-between text-sm">
-                                    <span>${item.name} x${item.quantity}</span>
-                                    <span>$${(item.price * item.quantity).toFixed(2)}</span>
-                                </div>
-                            `).join('')}
-                        </div>
-                        <div class="border-t pt-2 flex justify-between font-bold">
-                            <span>Total:</span>
-                            <span>$${order.total.toFixed(2)}</span>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function updateOrderStatus(orderId, newStatus) {
-            const order = orderHistory.find(o => o.id === orderId);
-            if (order) {
-                order.status = newStatus;
-                localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
-                
-                if (currentRole === 'owner') {
-                    updateOwnerStats();
-                }
-                
+            // Pushes the new order to Firebase, which generates a unique ID
+            db.ref('orders').push(newOrder).then(() => {
+                showNotification('Order placed successfully!', 'success');
+                // Also save to guest's local history (this is device-specific)
+                guestOrderHistory.unshift({ ...newOrder, id: Date.now() }); // Add a temporary ID for local use
+                localStorage.setItem('guestOrderHistory', JSON.stringify(guestOrderHistory));
                 renderOrderHistory();
-                if (currentRole === 'kitchen') {
-                    renderKitchenOrders();
-                }
-                showNotification('Order status updated', 'success');
-            }
+
+                // Clear the cart
+                currentOrder = [];
+                document.getElementById('order-preferences').value = '';
+                renderCart();
+            }).catch(err => {
+                showNotification('Failed to place order. Please try again.', 'error');
+            });
         }
 
-        // Kitchen Panel
-        function renderKitchenOrders() {
-            const container = document.getElementById('kitchenOrders');
-            const activeOrders = orderHistory.filter(o => o.status !== 'delivered');
+        // --- ORDER HISTORY & VIEWS ---
+        function renderOrderHistory() {
+            const container = document.getElementById('order-history-container');
+            container.innerHTML = guestOrderHistory.length === 0 ? '<p>No past orders found on this device.</p>' : guestOrderHistory.map(order => \`
+                <div class="bg-white p-4 rounded-lg shadow-md mb-4">
+                    <h3 class="font-bold text-lg">Order for Table/Room: \${order.table} - \${new Date(order.date).toLocaleString()}</h3>
+                    <p>Total: $\${order.total.toFixed(2)}</p>
+                    <p>Status: <span class="font-semibold uppercase">\${order.status || 'new'}</span></p>
+                    \${order.preferences ? \`<p class="mt-1"><strong class="font-semibold">Preferences:</strong> \${order.preferences}</p>\` : ''}
+                    <ul class="list-disc pl-5 mt-2">
+                        \${order.items.map(item => \`<li>\${item.name} - $\${item.price.toFixed(2)}</li>\`).join('')}
+                    </ul>
+                </div>
+            \`).join('');
+        }
+        
+        function clearOrderHistory() {
+            if (confirm("Are you sure you want to clear your personal order history from this device? This cannot be undone.")) {
+                guestOrderHistory = [];
+                localStorage.setItem('guestOrderHistory', '[]');
+                renderOrderHistory();
+                showNotification('Your order history has been cleared.', 'info');
+            }
+        }
+        
+        function renderAllOrders() {
+            const container = document.getElementById('all-orders-container');
+            if (allOrders.length === 0) {
+                 container.innerHTML = '<p>No orders found.</p>';
+                 return;
+            }
             
-            if (activeOrders.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 text-center py-8">No active orders</p>';
+            const sortedOrders = [...allOrders].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            container.innerHTML = sortedOrders.map(order => \`
+                 <div class="bg-white p-4 rounded-lg shadow-md mb-4">
+                    <h3 class="font-bold text-lg">Order for Table/Room: \${order.table} - \${new Date(order.date).toLocaleString()}</h3>
+                    <p>Total: $\${order.total.toFixed(2)}</p>
+                    <p>Status: <span class="font-semibold uppercase">\${order.status}</span></p>
+                    \${order.preferences ? \`<p class="mt-1 text-red-600"><strong class="font-semibold text-red-700">Preferences:</strong> \${order.preferences}</p>\` : ''}
+                    <ul class="list-disc pl-5 mt-2">\${order.items.map(item => \`<li>\${item.name}</li>\`).join('')}</ul>
+                    <div class="mt-2 space-x-2">
+                        <button onclick="updateOrderStatus('\${order.id}', 'new')" class="bg-gray-500 text-white px-2 py-1 text-sm rounded">New</button>
+                        <button onclick="updateOrderStatus('\${order.id}', 'preparing')" class="bg-yellow-500 text-white px-2 py-1 text-sm rounded">Preparing</button>
+                        <button onclick="updateOrderStatus('\${order.id}', 'ready')" class="bg-green-500 text-white px-2 py-1 text-sm rounded">Ready</button>
+                        <button onclick="updateOrderStatus('\${order.id}', 'delivered')" class="bg-blue-500 text-white px-2 py-1 text-sm rounded">Delivered</button>
+                    </div>
+                </div>
+            \`).join('');
+        }
+
+        function renderKitchenOrders() {
+            const container = document.getElementById('kitchen-orders-container');
+            const activeOrders = allOrders.filter(o => ['new', 'preparing'].includes(o.status));
+            
+            const sortedActiveOrders = activeOrders.sort((a,b) => new Date(a.date) - new Date(b.date));
+
+            container.innerHTML = sortedActiveOrders.length === 0 ? '<p class="col-span-3 text-center">No new orders.</p>' : sortedActiveOrders.map(order => \`
+                 <div class="bg-white p-4 rounded-lg shadow-md border-l-8 \${order.status === 'new' ? 'border-red-500' : 'border-yellow-500'}">
+                    <h3 class="font-bold text-xl">Table/Room: \${order.table}</h3>
+                    <p class="text-sm text-gray-500">\${new Date(order.date).toLocaleTimeString()}</p>
+                     \${order.preferences ? \`<p class="mt-2 text-red-600 font-semibold"><strong class="font-bold">Note:</strong> \${order.preferences}</p>\` : ''}
+                    <ul class="list-disc pl-5 my-2">\${order.items.map(item => \`<li class="font-semibold">\${item.name}</li>\`).join('')}</ul>
+                     <div class="mt-4">
+                        \${order.status === 'new' ? \`<button onclick="updateOrderStatus('\${order.id}', 'preparing')" class="w-full bg-yellow-500 text-white py-1 rounded">Start Preparing</button>\` : ''}
+                        \${order.status === 'preparing' ? \`<button onclick="updateOrderStatus('\${order.id}', 'ready')" class="w-full bg-green-500 text-white py-1 rounded">Mark as Ready</button>\` : ''}
+                    </div>
+                </div>
+            \`).join('');
+        }
+        
+        function updateOrderStatus(orderId, newStatus) {
+            db.ref('orders/' + orderId).update({ status: newStatus })
+                .then(() => showNotification(\`Order status updated to \${newStatus}.\`, 'info'))
+                .catch(err => showNotification('Error updating status.', 'error'));
+        }
+        
+        function loadOwnerDashboard() {
+            const totalOrders = allOrders.length;
+            const totalRevenue = allOrders.reduce((sum, order) => sum + order.total, 0);
+            document.getElementById('total-orders-stat').innerText = totalOrders;
+            document.getElementById('total-revenue-stat').innerText = totalRevenue.toFixed(2);
+            
+            const summaryContainer = document.getElementById('all-orders-owner-summary');
+            const sortedOrders = [...allOrders].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            summaryContainer.innerHTML = sortedOrders.slice(0, 5).map(o => \`<p class="text-sm">Table \${o.table}: $\${o.total.toFixed(2)} - <span class="font-semibold">\${o.status}</span></p>\`).join('') || '<p>No orders yet.</p>';
+        }
+
+        // --- MENU MANAGEMENT (OWNER) ---
+        function saveMenuData() {
+            db.ref('settings/menuData').set(menuData)
+                .then(() => showNotification('Menu saved successfully!', 'success'))
+                .catch(err => showNotification('Error saving menu.', 'error'));
+        }
+
+        function renderMenuEditor() {
+            const container = document.getElementById('menu-editor-container');
+            container.innerHTML = '';
+            const lang = 'en'; // Editor works on the English version as the base
+            if (!menuData[lang] || !menuData[lang].categories) {
+                container.innerHTML = '<p>Menu data is not available for editing.</p>';
                 return;
             }
-            
-            container.innerHTML = activeOrders.map(order => {
-                const statusClass = order.status === 'ready' ? 'status-ready' :
-                                   order.status === 'preparing' ? 'status-preparing' : 'status-pending';
-                
-                return `
-                    <div class="border rounded-lg p-6 bg-white shadow-md">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h3 class="font-bold text-xl">Order #${order.id}</h3>
-                                <p class="text-sm text-gray-600">${order.date}</p>
-                                <p class="text-lg font-semibold mt-1">${order.tableNumber} - ${order.guestName}</p>
-                                ${order.preferences ? `<div class="mt-2 p-3 bg-yellow-50 border-2 border-yellow-400 rounded-lg"><p class="text-sm font-bold text-yellow-800"><i class="fas fa-exclamation-triangle"></i> ALLERGIES/PREFERENCES:</p><p class="text-sm text-yellow-900 font-semibold mt-1">${order.preferences}</p></div>` : ''}
-                            </div>
-                            <span class="status-badge ${statusClass}">${order.status.toUpperCase()}</span>
+
+            menuData[lang].categories.forEach(category => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'p-4 bg-gray-100 rounded-lg';
+                let itemsHtml = category.items.map(item => \`
+                    <div class="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                        <div>
+                            <p class="font-bold">\${item.name}</p>
+                            <p class="text-sm text-gray-600">$ \${item.price.toFixed(2)}</p>
                         </div>
-                        <div class="space-y-2 mb-4">
-                            ${order.items.map(item => `
-                                <div class="flex justify-between text-lg">
-                                    <span><strong>${item.name}</strong> x${item.quantity}</span>
-                                    <span>$${(item.price * item.quantity).toFixed(2)}</span>
-                                </div>
-                            `).join('')}
-                        </div>
-                        <div class="border-t pt-3 mb-4">
-                            <div class="flex justify-between text-xl font-bold">
-                                <span>Total:</span>
-                                <span>$${order.total.toFixed(2)}</span>
-                            </div>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="updateOrderStatus(${order.id}, 'preparing')" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-lg font-semibold">
-                                Start Preparing
-                            </button>
-                            <button onclick="updateOrderStatus(${order.id}, 'ready')" class="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg font-semibold">
-                                Mark Ready
-                            </button>
-                            <button onclick="updateOrderStatus(${order.id}, 'delivered')" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-4 py-3 rounded-lg font-semibold">
-                                Delivered
-                            </button>
+                        <div class="space-x-2">
+                            <button onclick="openMenuEditorModal('\${item.id}')" class="bg-blue-500 text-white px-3 py-1 rounded text-sm">Edit</button>
+                            <button onclick="deleteMenuItem('\${item.id}')" class="bg-red-500 text-white px-3 py-1 rounded text-sm">Delete</button>
                         </div>
                     </div>
-                `;
-            }).join('');
-        }
+                \`).join('');
 
-        function sendKitchenNotification() {
-            const message = document.getElementById('kitchenNotificationInput').value;
-            if (message) {
-                showNotification(message, 'info', 10000);
-                document.getElementById('kitchenNotificationInput').value = '';
+                categoryDiv.innerHTML = \`
+                    <h3 class="text-xl font-bold mb-2">\${category.name}</h3>
+                    <div class="space-y-2">\${itemsHtml}</div>
+                \`;
+                container.appendChild(categoryDiv);
+            });
+        }
+        
+        function openMenuEditorModal(itemId = null) {
+            const form = document.getElementById('menu-editor-form');
+            form.reset();
+            document.getElementById('menu-editor-modal').classList.remove('hidden');
+
+            if (itemId) {
+                document.getElementById('menu-editor-title').innerText = 'Edit Menu Item';
+                document.getElementById('menu-item-id').value = itemId;
+
+                const item = findMenuItem(itemId);
+                let categoryName = '';
+                 for (const lang in menuData) {
+                    if (menuData[lang] && menuData[lang].categories) {
+                        for (const cat of menuData[lang].categories) {
+                            if (cat.items.some(i => i.id == itemId)) {
+                                categoryName = cat.name;
+                                break;
+                            }
+                        }
+                    }
+                    if (categoryName) break;
+                }
+
+                if (item) {
+                    document.getElementById('menu-item-category').value = categoryName;
+                    document.getElementById('menu-item-name').value = item.name;
+                    document.getElementById('menu-item-description').value = item.description;
+                    document.getElementById('menu-item-price').value = item.price;
+                    document.getElementById('menu-item-tags').value = item.tags ? item.tags.join(', ') : '';
+                }
+            } else {
+                document.getElementById('menu-editor-title').innerText = 'Add Menu Item';
+                document.getElementById('menu-item-id').value = '';
             }
         }
 
-        // Owner Panel
-        function updateOwnerStats() {
-            const total = orderHistory.length;
-            const pending = orderHistory.filter(o => o.status === 'pending' || o.status === 'preparing').length;
-            const completed = orderHistory.filter(o => o.status === 'delivered').length;
-            const revenue = orderHistory.filter(o => o.status === 'delivered').reduce((sum, o) => sum + o.total, 0);
+        function closeMenuEditorModal() { document.getElementById('menu-editor-modal').classList.add('hidden'); }
+
+        function saveMenuItem(event) {
+            event.preventDefault();
+            const id = document.getElementById('menu-item-id').value;
+            const categoryName = document.getElementById('menu-item-category').value.trim();
+            const name = document.getElementById('menu-item-name').value;
+            const description = document.getElementById('menu-item-description').value;
+            const price = parseFloat(document.getElementById('menu-item-price').value);
+            const tags = document.getElementById('menu-item-tags').value.split(',').map(t => t.trim()).filter(t => t);
+
+            if (id) { // Editing
+                for (const l in menuData) {
+                    if (menuData[l] && menuData[l].categories) {
+                         menuData[l].categories.forEach(cat => {
+                            const itemIndex = cat.items.findIndex(i => i.id == id);
+                            if (itemIndex !== -1) {
+                                cat.items[itemIndex] = { ...cat.items[itemIndex], name, description, price, tags };
+                            }
+                        });
+                    }
+                }
+            } else { // Adding
+                const newItemId = 'item-' + Date.now();
+                const newItemData = { id: newItemId, name, description, price, tags };
+                for (const l in menuData) {
+                    if (menuData[l]) {
+                        if (!menuData[l].categories) menuData[l].categories = [];
+                        let category = menuData[l].categories.find(c => c.name.toLowerCase() === categoryName.toLowerCase());
+                        if (!category) {
+                            category = { name: categoryName, items: [] };
+                            menuData[l].categories.push(category);
+                        }
+                        category.items.push(newItemData);
+                    }
+                }
+            }
             
-            document.getElementById('totalOrders').textContent = total;
-            document.getElementById('pendingOrders').textContent = pending;
-            document.getElementById('completedOrders').textContent = completed;
-            document.getElementById('totalRevenue').textContent = `$${revenue.toFixed(2)}`;
+            saveMenuData();
+            renderMenu();
+            renderMenuEditor();
+            closeMenuEditorModal();
+        }
+        
+        function deleteMenuItem(itemId) {
+            if (confirm('Are you sure you want to delete this item from all menus?')) {
+                for (const lang in menuData) {
+                     if (menuData[lang] && menuData[lang].categories) {
+                        menuData[lang].categories.forEach(cat => {
+                            cat.items = cat.items.filter(i => i.id != itemId);
+                        });
+                     }
+                }
+                saveMenuData();
+                renderMenu();
+                renderMenuEditor();
+            }
         }
 
-        function renderOwnerOrders() {
+        // --- UTILS & OTHER ---
+        function showNotification(message, type = 'info') {
+             const container = document.getElementById('notifications-container');
+            const color = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+            const notif = document.createElement('div');
+            notif.className = \`text-white p-3 rounded shadow-lg \${color} animate-pulse\`;
+            notif.innerText = message;
+            container.appendChild(notif);
+            setTimeout(() => {
+                notif.classList.remove('animate-pulse');
+                notif.style.transition = 'opacity 0.5s ease';
+                notif.style.opacity = '0';
+                setTimeout(() => notif.remove(), 500);
+            }, 3000);
+        }
+
+        function applySettings() { 
+            const settings = {
+                hotelName: document.getElementById('hotel-name-input').value,
+                hotelAddress: document.getElementById('hotel-address-input').value,
+                logoUrl: document.getElementById('logo-url-input').value,
+                facebookUrl: document.getElementById('facebook-url-input').value,
+                instagramUrl: document.getElementById('instagram-url-input').value,
+                twitterUrl: document.getElementById('twitter-url-input').value,
+                bgColor: document.getElementById('bg-color-input').value,
+                textColor: document.getElementById('text-color-input').value,
+            };
+            db.ref('settings/branding').set(settings)
+                .then(() => showNotification('General settings saved!', 'success'))
+                .catch(err => showNotification('Error saving settings.', 'error'));
+        }
+
+        function loadSettings(settings) {
+            const s = settings || {};
+            document.getElementById('hotel-name').innerText = s.hotelName || "Hotel Name";
+            document.getElementById('hotel-address').innerText = s.hotelAddress || "123 Main Street, Cityville, ST 12345";
+            document.getElementById('logo').src = s.logoUrl || "https://via.placeholder.com/50";
+            document.querySelector('#social-media a[href*="facebook"]').href = s.facebookUrl || "#";
+            document.querySelector('#social-media a[href*="instagram"]').href = s.instagramUrl || "#";
+            document.querySelector('#social-media a[href*="twitter"]').href = s.twitterUrl || "#";
+            
+            document.getElementById('hotel-name-input').value = s.hotelName || "";
+            document.getElementById('hotel-address-input').value = s.hotelAddress || "";
+            document.getElementById('logo-url-input').value = s.logoUrl || "";
+            document.getElementById('facebook-url-input').value = s.facebookUrl || "";
+            document.getElementById('instagram-url-input').value = s.instagramUrl || "";
+            document.getElementById('twitter-url-input').value = s.twitterUrl || "";
+
+            document.documentElement.style.setProperty('--primary-color', s.bgColor || '#f9fafb');
+            document.documentElement.style.setProperty('--secondary-color', s.textColor || '#1f2937');
+            document.getElementById('bg-color-input').value = s.bgColor || '#f9fafb';
+            document.getElementById('text-color-input').value = s.textColor || '#1f2937';
+        }
+        
+        document.getElementById('photo-input').addEventListener('change', function(event) {
+             const previewContainer = document.getElementById('photo-preview-container');
+            previewContainer.innerHTML = '';
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'max-w-full h-auto rounded shadow-md';
+                    previewContainer.appendChild(img);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        function printAllOrders() {
+            const printWindow = window.open('', '', 'height=600,width=800');
+            printWindow.document.write('<html><head><title>All Orders</title>');
+            printWindow.document.write('<style>body{font-family:sans-serif;padding:20px} .order-item{border-bottom:1px solid #ccc;padding-bottom:1rem;margin-bottom:1rem} h1{text-align:center} h2{border-bottom:2px solid #000;padding-bottom:5px} ul{list-style:none;padding-left:0}</style>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(\`<h1>Order History Report</h1><p>Generated on: ${new Date().toLocaleString()}</p>\`);
+
+            const sortedOrders = [...allOrders].sort((a,b) => new Date(b.date) - new Date(a.date));
+
+            const reportContent = sortedOrders.map(order => \`
+                <div class="order-item">
+                    <h2>Order for Table/Room: ${order.table}</h2>
+                    <p><strong>Date:</strong> ${new Date(order.date).toLocaleString()}</p>
+                    <p><strong>Total:</strong> ${order.total.toFixed(2)}</p>
+                    <p><strong>Status:</strong> ${order.status.toUpperCase()}</p>
+                    ${order.preferences ? \`<p><strong>Preferences:</strong> ${order.preferences}</p>\` : ''}
+                    <strong>Items:</strong>
+                    <ul>
+                        ${order.items.map(item => \`<li>- ${item.name} (${item.price.toFixed(2)})</li>\`).join('')}
+                    </ul>
+                </div>
+            \`).join('');
+
+            printWindow.document.write(reportContent);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.focus(); 
+            setTimeout(function(){ printWindow.print(); }, 500);
+        }
+
+        // --- INITIALIZATION AND REAL-TIME LISTENERS ---
+        async function initializeApp() {
+            // Load guest's local order history first
+            guestOrderHistory = JSON.parse(localStorage.getItem('guestOrderHistory')) || [];
+
+            // Listener for Settings
+            db.ref('settings').on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    const settings = snapshot.val();
+                    if(settings.branding) loadSettings(settings.branding);
+                    if(settings.credentials) {
+                        credentials = settings.credentials;
+                         document.getElementById('new-username-input').value = credentials.username;
+                    };
+                    if(settings.menuData) {
+                         menuData = settings.menuData;
+                         renderMenu(); // Re-render menu when it changes
+                    }
+                } else {
+                    // If no settings exist, create default ones
+                    const defaultSettings = {
+                        credentials: { username: 'owner', password: 'kitchenpass456' },
+                        branding: { hotelName: 'Hotel Name', hotelAddress: '123 Main St', logoUrl: '', facebookUrl: '#', instagramUrl: '#', twitterUrl: '#', bgColor: '#f9fafb', textColor: '#1f2937' },
+                        menuData: {
+                            en: { categories: [{ name: "Main Courses", items: [{ id: "item-1", name: "Default Dish", price: 9.99, description: "This is a default item.", tags: [] }]}]},
+                            am: { categories: [] }, om: { categories: [] }, ti: { categories: [] }
+                        }
+                    };
+                    db.ref('settings').set(defaultSettings);
+                }
+            });
+
+            // Listener for all Orders
+            db.ref('orders').on('value', (snapshot) => {
+                const ordersObject = snapshot.val();
+                const oldOrderCount = allOrders.length;
+
+                if (ordersObject) {
+                    allOrders = Object.keys(ordersObject).map(key => ({
+                        id: key, // The Firebase unique key is the ID
+                        ...ordersObject[key]
+                    }));
+                } else {
+                    allOrders = [];
+                }
+                
+                // Alert for new orders
+                if (userState.isLoggedIn && allOrders.length > oldOrderCount && oldOrderCount > 0) {
+                     showNotification('A new order has been placed!', 'success');
+                     document.getElementById('notification-sound').play();
+                }
+
+                // Update views if they are open
+                if (!document.getElementById('all-orders-view').classList.contains('hidden')) renderAllOrders();
+                if (!document.getElementById('kitchen-view').classList.contains('hidden')) renderKitchenOrders();
+                if (!document.getElementById('owner-dashboard-view').classList.contains('hidden')) loadOwnerDashboard();
+            });
+
+            // Initial UI setup
+            updateNav();
+            showView('menu');
+            renderCart();
             renderOrderHistory();
         }
 
-        function sendOwnerNotification() {
-            const message = document.getElementById('ownerNotificationInput').value;
-            if (message) {
-                showNotification(message, 'info', 10000);
-                document.getElementById('ownerNotificationInput').value = '';
-            }
-        }
-
-        // Notification System
-        function showNotification(message, type = 'info', duration = 3000) {
-            const container = document.getElementById('notificationContainer');
-            const notification = document.createElement('div');
-            
-            const bgColor = type === 'success' ? 'bg-green-500' : 
-                           type === 'error' ? 'bg-red-500' : 
-                           type === 'info' ? 'bg-blue-500' : 'bg-gray-500';
-            
-            notification.className = `notification ${bgColor} text-white px-6 py-4 rounded-lg shadow-lg`;
-            notification.innerHTML = `
-                <div class="flex items-center justify-between">
-                    <span>${message}</span>
-                    <button onclick="this.parentElement.parentElement.remove()" class="ml-4">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            `;
-            
-            container.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.remove();
-            }, duration);
-        }
-
-        // Language Change
-        function changeLanguage() {
-            currentLanguage = document.getElementById('languageSelector').value;
-            if (currentRole === 'guest') {
-                renderMenu();
-            }
-            if (document.getElementById('cartModal').classList.contains('active')) {
-                renderCart();
-            }
-        }
-
-        // Image Upload Handlers
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('logoUpload').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        document.getElementById('logoUrl').value = event.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-
-            document.getElementById('bgImageUpload').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        document.body.style.backgroundImage = `url(${event.target.result})`;
-                        document.body.style.backgroundSize = 'cover';
-                        document.body.style.backgroundAttachment = 'fixed';
-                        localStorage.setItem('bgImage', event.target.result);
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-
-            document.getElementById('menuItemImage').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        document.getElementById('menuItemImagePreview').src = event.target.result;
-                        document.getElementById('menuItemImagePreview').classList.remove('hidden');
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-
-            const savedBg = localStorage.getItem('bgImage');
-            if (savedBg) {
-                document.body.style.backgroundImage = `url(${savedBg})`;
-                document.body.style.backgroundSize = 'cover';
-                document.body.style.backgroundAttachment = 'fixed';
-            }
-
-            init();
-        });
-
-        function removeBgImage() {
-            document.body.style.backgroundImage = '';
-            localStorage.removeItem('bgImage');
-            showNotification('Background image removed', 'success');
-        }
+        // --- START THE APP ---
+        document.addEventListener('DOMContentLoaded', initializeApp);
     </script>
 </body>
 </html>
+https://restaurant-management-cef63-default-rtdb.firebaseio.com/
